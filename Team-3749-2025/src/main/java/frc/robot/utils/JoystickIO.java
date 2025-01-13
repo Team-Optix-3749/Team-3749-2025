@@ -58,6 +58,11 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
+        pilot.rightTrigger().whileTrue(Commands.runOnce(() -> Robot.coral.setGoalVelocity(3)));
+        pilot.rightTrigger().onFalse(Commands.runOnce(() -> Robot.coral.stop()));
+        pilot.leftTrigger().whileTrue(Commands.runOnce(() -> Robot.coral.setGoalVelocity(-3)));
+        pilot.leftTrigger().onFalse(Commands.runOnce(() -> Robot.coral.stop()));
+
     }
 
     public static void pilotBindings() {
