@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.coral.Coral;
 import frc.robot.subsystems.example.ExampleSubsystem;
+import frc.robot.subsystems.rollers.algae.Algae;
+import frc.robot.subsystems.rollers.coral.Coral;
+import frc.robot.subsystems.rollers.scoring.Scoring;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
 
@@ -20,6 +22,8 @@ public class Robot extends TimedRobot {
 
   public static Swerve swerve = new Swerve();
   public static Coral coral = new Coral();
+  public static Algae algae = new Algae();
+  public static Scoring scoring = new Scoring();
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
 
   private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);

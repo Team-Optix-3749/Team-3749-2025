@@ -1,4 +1,4 @@
-package frc.robot.subsystems.coral;
+package frc.robot.subsystems.rollers.coral;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
