@@ -1,4 +1,4 @@
-package frc.robot.subsystems.rollers.coral;
+package frc.robot.subsystems.rollers.algae.intake;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -10,7 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-public class CoralReal implements CoralIO {
+public class CoralReal implements AlgaeWristIO {
     private SparkMax motor = new SparkMax(3000,MotorType.kBrushless); //obviously dont leave that as 3000
     private SparkMaxConfig config = new SparkMaxConfig();
     private RelativeEncoder encoder = motor.getEncoder();

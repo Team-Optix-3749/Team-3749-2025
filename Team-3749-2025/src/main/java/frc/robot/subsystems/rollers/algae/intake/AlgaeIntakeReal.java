@@ -1,26 +1,19 @@
-package frc.robot.subsystems.rollers.coral;
+package frc.robot.subsystems.rollers.algae.intake;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.MathUtil;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 
-public class CoralReal implements CoralIO {
+public class AlgaeIntakeReal implements AlgaeIntakeIO {
     private SparkMax motor = new SparkMax(3000,MotorType.kBrushless); //obviously dont leave that as 3000
-    private SparkMaxConfig config = new SparkMaxConfig();
     private RelativeEncoder encoder = motor.getEncoder();
     private double goalVolts = 0;
 
-    public CoralReal(boolean isInverted)
+    public AlgaeIntakeReal()
     {
-        config.encoder.inverted(isInverted);
-        motor.configure(config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters); //i can't read the
-        //board so if this is wrong oh well
+        
     }
 
     @Override
@@ -39,13 +32,13 @@ public class CoralReal implements CoralIO {
     }
 
     @Override
-    public void updateData(CoralData data)
+    public void updateData(AlgaeIntakeData data)
     {
         data.tempCelsius = motor.getMotorTemperature();
         data.velocityRadPerSec = (encoder.getVelocity()*Math.PI*2)/60.0; //convert RPM to RPS
         data.goalVoltage = goalVolts;
         data.busVoltage = motor.getBusVoltage(); //read coralIO for more info
-        data.hasCoral = false; //depends on if build does smth like this again
+        data.hasAlgae = false; //depends on if build does smth like this again
     }
 
     

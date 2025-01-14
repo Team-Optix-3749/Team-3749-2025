@@ -12,12 +12,14 @@ public class RollerConstants {
 
     public static class CoralConstants {
         public static PIDController coralPIDController = new PIDController(1, 0, 0);
-        public static SimpleMotorFeedforward coralFeedForward = new SimpleMotorFeedforward(0, 1, 0);
+        public static SimpleMotorFeedforward coralFeedForward = new SimpleMotorFeedforward(0, 0.02, 0);
     }
 
     public static class AlgaeConstants {
-        public static PIDController algaePIDController = new PIDController(1, 0, 0);
-        public static SimpleMotorFeedforward algaeFeedForward = new SimpleMotorFeedforward(0, 1, 0);
+        public static PIDController algaeIntakePIDController = new PIDController(1, 0, 0);
+        public static PIDController algaeWristPIDController = new PIDController(1, 0, 0);
+        public static SimpleMotorFeedforward algaeIntakeFF = new SimpleMotorFeedforward(0, 1, 0);
+        public static SimpleMotorFeedforward algaeWristFF = new SimpleMotorFeedforward(0, 1, 0);
     }
 
     public static class ScoringConstants {
