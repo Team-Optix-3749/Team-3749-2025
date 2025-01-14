@@ -59,11 +59,6 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        pilot.rightTrigger().whileTrue(Commands.runOnce(() -> {Robot.coral.setGoalVelocity(3);Robot.coral.setCoralState(RollerStates.RUN);}));
-        pilot.rightTrigger().onFalse(Commands.runOnce(() -> {Robot.coral.stop();Robot.coral.setCoralState(RollerStates.STOP);}));
-        pilot.leftTrigger().whileTrue(Commands.runOnce(() -> {Robot.coral.setGoalVelocity(-3);Robot.coral.setCoralState(RollerStates.RUN);}));
-        pilot.leftTrigger().onFalse(Commands.runOnce(() -> {Robot.coral.stop();Robot.coral.setCoralState(RollerStates.STOP);}));
-
     }
 
     public static void pilotBindings() {
