@@ -8,7 +8,6 @@ import frc.robot.Robot;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.rollers.RollerConstants.RollerStates;
 
 /**
  * Util class for button bindings
