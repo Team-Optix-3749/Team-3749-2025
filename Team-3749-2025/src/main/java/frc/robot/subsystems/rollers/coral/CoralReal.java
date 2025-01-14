@@ -1,20 +1,32 @@
 package frc.robot.subsystems.rollers.coral;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class CoralReal implements CoralIO {
-    private SparkMax motorOne = new SparkMax(3000,MotorType.kBrushless); //obviously dont leave that as 3000
-    private RelativeEncoder motorOneEncoder = motorOne.getEncoder();
+    private SparkMax motor = new SparkMax(3000,MotorType.kBrushless); //obviously dont leave that as 3000
+    private SparkMaxConfig config = new SparkMaxConfig();
+    private RelativeEncoder encoder = motor.getEncoder();
     private double goalVolts = 0;
 
-    public CoralReal()
+    public CoralReal(boolean isInverted)
     {
+        config.encoder.inverted(isInverted);
+        motor.configure(config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters); //i can't read the
+        //board so if this is wrong oh well
+    }
 
+    @Override
+    public void stop()
+    {
+        motor.stopMotor();
     }
 
     @Override
@@ -22,16 +34,16 @@ public class CoralReal implements CoralIO {
     {
         volts = MathUtil.clamp(volts, -12, 12);
         goalVolts = volts;
-        motorOne.setVoltage(volts);
+        motor.setVoltage(volts);
     }
 
     @Override
     public void updateData(CoralData data)
     {
-        data.intakeTempCelsius = motorOne.getMotorTemperature();
-        data.intakeVelocityRadPerSec = (motorOneEncoder.getVelocity()*Math.PI*2)/60.0; //convert RPM to RPS
+        data.tempCelsius = motor.getMotorTemperature();
+        data.velocityRadPerSec = (encoder.getVelocity()*Math.PI*2)/60.0; //convert RPM to RPS
         data.goalVoltage = goalVolts;
-        data.intakeVoltage = motorOne.getBusVoltage(); //read coralIO for more info
+        data.busVoltage = motor.getBusVoltage(); //read coralIO for more info
         data.hasCoral = false; //depends on if build does smth like this again
     }
 
