@@ -26,5 +26,14 @@ public class RollerConstants {
     public static double kVScoringSim = 2.1;
     public static double kAScoringSim = 0.0;
 
-    
+    public static final double scoringVoltage = 8.0;
+    public static final double intakeVoltage = 6.0;
+    public static final double runVoltage = 7.0;
+    public static final double holdVoltage = 2.0;
+
+    public enum RollerStates {
+        RUN,
+        MAINTAIN,
+        STOP
+    }
 }
