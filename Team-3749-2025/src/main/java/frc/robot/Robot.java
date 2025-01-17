@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.example.ExampleSubsystem;
+import frc.robot.subsystems.roller.CoralRoller;
+import frc.robot.subsystems.roller.Roller;
+import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
 
@@ -18,6 +21,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
+  public static RollerSim rollerSim = new RollerSim();
+  public static Roller roller = new CoralRoller(rollerSim);
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
 
   private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
@@ -32,6 +37,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    
   }
 
   @Override
@@ -44,7 +50,7 @@ public class Robot extends TimedRobot {
     isBrownedOutLog.set(RobotController.isBrownedOut());
     allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
     FMSLog.set(DriverStation.isFMSAttached());
-
+    roller.periodic();
   }
 
   @Override

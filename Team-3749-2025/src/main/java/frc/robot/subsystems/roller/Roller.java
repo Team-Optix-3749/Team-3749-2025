@@ -1,6 +1,9 @@
 package frc.robot.subsystems.roller;
 
+import javax.sound.sampled.SourceDataLine;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.utils.ShuffleData;
@@ -21,11 +24,14 @@ public abstract class Roller extends SubsystemBase {
     public Roller(RollerIO rollerIO) {
         this.rollerIO = rollerIO;
         this.positionController = new PIDController(0.1, 0, 0);
+
+        this.rollerStates = RollerConstants.RollerStates.RUN;
         rollerData = new RollerData();
     }
     
     public void setVoltage(double volts) {
         rollerIO.setVoltage(volts);
+        rollerData.rollerVolts = volts;
     }
 
     public RollerStates getState() {
@@ -40,11 +46,14 @@ public abstract class Roller extends SubsystemBase {
         switch(rollerStates) {
             case RUN:
                 run();
+                break;
             case MAINTAIN:
                 lastKnownVelocity = rollerData.rollerVelocityRadPerSec;
                 maintain();
+                break;
             case STOP:
                 stop();
+                break;
         }
     }
 
@@ -64,10 +73,17 @@ public abstract class Roller extends SubsystemBase {
     @Override
     public void periodic() {
         rollerIO.updateData(rollerData);
+        runRollerStates();
+
         RollerVelocityLog.set(rollerData.rollerVelocityRadPerSec);
         RollerVoltageLog.set(rollerData.rollerVolts);
         RollerCurrentLog.set(rollerData.currentAmps);
         StateLog.set(rollerStates.name());
+
+        SmartDashboard.putNumber("Roller Velocity", rollerData.rollerVelocityRadPerSec);
+        SmartDashboard.putNumber("Roller Voltage", rollerData.rollerVolts);
+        SmartDashboard.putNumber("Roller Current", rollerData.currentAmps);
+        SmartDashboard.putString("Roller State", rollerStates.name());
     }
 
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.roller;
 
 public class CoralRoller extends Roller {
-    private RollerIO rollerIO;
 
     public CoralRoller(RollerIO rollerIO) {
         super(rollerIO);
@@ -9,6 +8,6 @@ public class CoralRoller extends Roller {
 
     @Override
     public void run() {
-        rollerIO.setVoltage(RollerConstants.intakeVoltage);
+        setVoltage(RollerConstants.intakeVoltage);
     }
 }
