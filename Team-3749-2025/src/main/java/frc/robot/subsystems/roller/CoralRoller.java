@@ -8,6 +8,6 @@ public class CoralRoller extends Roller {
 
     @Override
     public void run() {
-        setVoltage(RollerConstants.intakeVoltage);
+        setVelocity(RollerConstants.coralVelocity);
     }
 }

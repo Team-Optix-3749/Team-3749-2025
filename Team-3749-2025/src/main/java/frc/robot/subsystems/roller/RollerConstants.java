@@ -1,34 +1,25 @@
 package frc.robot.subsystems.roller;
 
-import edu.wpi.first.math.controller.PIDController;
-import frc.robot.Robot;
-
 public class RollerConstants {
+    public static final int algaeMotorId = 2;
+    public static final int coralMotorId = 1; 
+    public static final int scoringMotorId = 2; 
 
-    public static final int algaeMotorId = 2; // example
-    public static final int coralMotorId = 1; // example
-    public static final int scoringMotorId = 2; // example
+    public static final double momentOfInertia = 0.04;
+    public static final double gearRatio = 1.0;
+    public static final double measurementNoise = 0.0;
 
-    public static final double algaeGearRatio = 1; // example
-    public static final double coralGearRatio = 1; // example
-    public static final double scoringGearRatio = 1; // example
+    // PID and FF values
+    public static final double kPSim = 10.0;
+    public static final double kISim = 0.0;
+    public static final double kDSim = 0.0;
+    public static final double kSSim = 0.0;
+    public static final double kVSim = 0.02;
+    public static final double kASim = 0.0;
 
-    // example PID Sim Values
-    public static double kSAlgaeSim = 0.2;
-    public static double kVAlgaeSim = 1.98;
-    public static double kAAlgaeSim = 0.0;
-
-    public static double kSCoralSim = 2.0;
-    public static double kVCoralSim = 0.4;
-    public static double kACoralSim = 0.0;
-
-    public static double kSScoringSim = 0.1;
-    public static double kVScoringSim = 2.1;
-    public static double kAScoringSim = 0.0;
-
-    public static final double scoringVoltage = 8.0;
-    public static final double intakeVoltage = 6.0;
-    public static final double runVoltage = 7.0;
+    public static final double coralVelocity = 7.0;
+    public static final double algaeVelocity = 5.0;
+    public static final double scoringVelocity = 10.0;
     public static final double holdVoltage = 2.0;
 
     public enum RollerStates {

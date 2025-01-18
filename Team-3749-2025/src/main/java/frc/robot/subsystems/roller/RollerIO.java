@@ -2,10 +2,11 @@ package frc.robot.subsystems.roller;
 
 public interface RollerIO {
     public static class RollerData {
-        public double rollerVolts = 0.0;
+        public double rollerAppliedVolts = 0.0;
         public double rollerVelocityRadPerSec = 0.0;
         public double rollerTempCelcius = 0.0;
         public double currentAmps = 0.0;
+        public double rollerPositionRotations = 0.0;
         public boolean sensorTripped = false;
 
     }

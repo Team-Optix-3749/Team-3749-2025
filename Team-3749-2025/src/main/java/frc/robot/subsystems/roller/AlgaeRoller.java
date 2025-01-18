@@ -1,19 +1,18 @@
 package frc.robot.subsystems.roller;
 public class AlgaeRoller extends Roller {
     
-    private RollerIO rollerIO;
-
     public AlgaeRoller(RollerIO rollerIO) {
         super(rollerIO);
     }
 
     @Override
     public void run() {
-        rollerIO.setVoltage(RollerConstants.runVoltage);
+        setVelocity(RollerConstants.algaeVelocity);
     }
+    
     @Override
     public void maintain() {
-        rollerIO.setVoltage(RollerConstants.holdVoltage);
+        setVelocity(RollerConstants.holdVoltage);
     }
 
 }
