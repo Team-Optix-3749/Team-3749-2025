@@ -30,7 +30,7 @@ public class OnTheFly extends Command {
         new PIDConstants(AutoConstants.kPTurn,0,AutoConstants.kDTurn));
 
     public OnTheFly() {
-        super.addRequirements(Robot.swerve);
+        
     }
 
     @Override

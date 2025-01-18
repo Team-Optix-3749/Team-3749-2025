@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swerve;
 
+import java.time.chrono.IsoChronology;
+
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 
 import choreo.trajectory.SwerveSample;
@@ -155,6 +157,7 @@ public class Swerve extends SubsystemBase {
   };
 
   private int currentPPSetpointIndex = 0;
+  public boolean isOTF = false;
 
   public Swerve() {
 
