@@ -13,6 +13,8 @@ public abstract class Roller extends SubsystemBase {
     private RollerStates rollerStates;
     private final PIDController positionController;
     private double lastKnownPosition = 0.0;
+    private RollerStates previousState = RollerConstants.RollerStates.STOP;
+
     private PIDController feedback = new PIDController(
             RollerConstants.kPSim,
             RollerConstants.kISim,
@@ -27,11 +29,13 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<Double> RollerVoltageLog = new ShuffleData<Double>(this.getName(), "roller voltage", 0.0);
     private ShuffleData<Double> RollerCurrentLog = new ShuffleData<Double>(this.getName(), "roller current", 0.0);
     private ShuffleData<String> StateLog = new ShuffleData<String>(this.getName(), "state", RollerStates.STOP.name());
+    private ShuffleData<Double> RollerPositionLog = new ShuffleData<Double>(this.getName(), "roller position", 0.0);
+    private ShuffleData<Double> RollerLastKnownPositionLog = new ShuffleData<Double>(this.getName(), "roller last known position", 0.0);
 
     public Roller(RollerIO rollerIO) {
         this.rollerIO = rollerIO;
-        this.positionController = new PIDController(0.1, 0, 0);
-        this.rollerStates = RollerConstants.RollerStates.RUN;
+        this.positionController = new PIDController(15, 0, 10);
+        this.rollerStates = RollerConstants.RollerStates.STOP;
         rollerData = new RollerData();
     }
     
@@ -56,13 +60,21 @@ public abstract class Roller extends SubsystemBase {
         this.rollerStates = rollerStates;
     }
 
+    public void updateLastKnownPosition() {
+        if (rollerStates == RollerConstants.RollerStates.MAINTAIN && previousState != RollerConstants.RollerStates.MAINTAIN) {
+            lastKnownPosition = rollerData.rollerPositionRotations; 
+        }
+        previousState = rollerStates;
+    }
+
     public void runRollerStates() {
+        updateLastKnownPosition();
+        
         switch(rollerStates) {
             case RUN:
                 run();
                 break;
             case MAINTAIN:
-                lastKnownPosition = rollerData.rollerPositionRotations;
                 maintain();
                 break;
             case STOP:
@@ -74,15 +86,16 @@ public abstract class Roller extends SubsystemBase {
     public abstract void run();
 
     public void maintain() {
-        double holdVoltage = positionController.calculate(rollerData.rollerPositionRotations, lastKnownPosition);
-        rollerIO.setVoltage(holdVoltage);
+        double holdVoltage = positionController.calculate(
+            rollerData.rollerPositionRotations, 
+            lastKnownPosition
+        );
+        setVoltage(holdVoltage);
     }
 
     public void stop() {
         rollerIO.setVoltage(0.0);
     }
-
-    // public abstract void handleSpecialBehavior();
 
     @Override
     public void periodic() {
@@ -92,6 +105,8 @@ public abstract class Roller extends SubsystemBase {
         RollerVelocityLog.set(rollerData.rollerVelocityRadPerSec);
         RollerVoltageLog.set(rollerData.rollerAppliedVolts);
         RollerCurrentLog.set(rollerData.currentAmps);
+        RollerPositionLog.set(rollerData.rollerPositionRotations);
+        RollerLastKnownPositionLog.set(lastKnownPosition);
         StateLog.set(rollerStates.name());
     }
 

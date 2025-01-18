@@ -26,7 +26,6 @@ public class RollerSim implements RollerIO {
         data.currentAmps = rollerMotor.getCurrentDrawAmps();
         data.rollerTempCelcius = 0.0;
         data.rollerPositionRotations += (data.rollerVelocityRadPerSec * 0.02 / (2 * Math.PI));
-        // data.sensorTripped = data.rollerVelocityRadPerSec > 12.0;
     }
 
     @Override

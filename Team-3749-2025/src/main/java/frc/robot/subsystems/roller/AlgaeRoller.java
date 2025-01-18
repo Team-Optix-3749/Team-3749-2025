@@ -10,9 +10,4 @@ public class AlgaeRoller extends Roller {
         setVelocity(RollerConstants.algaeVelocity);
     }
     
-    @Override
-    public void maintain() {
-        setVelocity(RollerConstants.holdVoltage);
-    }
-
 }

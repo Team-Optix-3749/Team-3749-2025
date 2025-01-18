@@ -7,6 +7,7 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.AlgaeRoller;
 import frc.robot.subsystems.roller.CoralRoller;
 import frc.robot.subsystems.roller.Roller;
+import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.ScoringRoller;
 import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.subsystems.swerve.Swerve;
@@ -56,18 +58,20 @@ public class Robot extends TimedRobot {
     isBrownedOutLog.set(RobotController.isBrownedOut());
     allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
     FMSLog.set(DriverStation.isFMSAttached());
-    coralRoller.periodic();
-    algaeRoller.periodic();
-    coralRoller.periodic();
+
   }
 
   @Override
   public void disabledInit() {
+    // coralRoller.setState(RollerConstants.RollerStates.RUN);
     swerve.setBreakMode(false);
   }
 
   @Override
   public void disabledPeriodic() {
+    // if (Timer.getFPGATimestamp() > 2) {
+    //   coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+    // }
 
   }
 
@@ -98,10 +102,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   @Override
   public void teleopPeriodic() {
+    
   }
 
   @Override
