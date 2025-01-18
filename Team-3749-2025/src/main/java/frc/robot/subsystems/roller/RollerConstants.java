@@ -1,9 +1,9 @@
 package frc.robot.subsystems.roller;
 
 public class RollerConstants {
-    public static final int algaeMotorId = 2;
-    public static final int coralMotorId = 1; 
-    public static final int scoringMotorId = 2; 
+    public static final int algaeMotorId = 1;
+    public static final int coralMotorId = 2; 
+    public static final int scoringMotorId = 3; 
 
     public static final double momentOfInertia = 0.04;
     public static final double gearRatio = 1.0;
