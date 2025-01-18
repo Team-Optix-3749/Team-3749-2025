@@ -12,12 +12,11 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.example.ExampleSubsystem;
-import frc.robot.subsystems.roller.AlgaeRoller;
-import frc.robot.subsystems.roller.CoralRoller;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.roller.ScoringRoller;
-import frc.robot.subsystems.roller.sim.RollerSim;
+import frc.robot.subsystems.roller.implementations.AlgaeRoller;
+import frc.robot.subsystems.roller.implementations.CoralRoller;
+import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
 
@@ -25,12 +24,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
-  public static RollerSim coralRollerSim = new RollerSim();
-  public static RollerSim algaeRollerSim = new RollerSim();
-  public static RollerSim scoringRollerSim = new RollerSim();
-  public static Roller coralRoller = new CoralRoller(coralRollerSim);
-  public static Roller algaeRoller = new AlgaeRoller(algaeRollerSim);
-  public static Roller scoringRoller = new ScoringRoller(scoringRollerSim);
+  public static Roller algaeRoller = new AlgaeRoller();
+  public static Roller coralRoller = new CoralRoller();
+  public static Roller scoringRoller = new ScoringRoller();
+  
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
 
   private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
@@ -63,16 +60,27 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    // algaeRoller.setState(RollerConstants.RollerStates.RUN);
+    // System.out.println("Coral State: " + coralRoller.getState());
+    // System.out.println("Algae State: " + algaeRoller.getState());
+
     // coralRoller.setState(RollerConstants.RollerStates.RUN);
+    // scoringRoller.setState(RollerConstants.RollerStates.RUN);
     swerve.setBreakMode(false);
   }
 
   @Override
   public void disabledPeriodic() {
-    // if (Timer.getFPGATimestamp() > 2) {
-    //   coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-    // }
-
+    // if (Timer.getFPGATimestamp() > 3 && Timer.getFPGATimestamp() < 5) {
+    //   algaeRoller.setState(RollerConstants.RollerStates.STOP);
+    //   // coralRoller.setState(RollerConstants.RollerStates.STOP);
+    //   // scoringRoller.setState(RollerConstants.RollerStates.STOP);
+    // } 
+    //  if (Timer.getFPGATimestamp() > 6)
+    //  System.out.println("CHANGED Coral state: " + coralRoller.getState());
+    //   algaeRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+      // coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+      // scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
   }
 
   @Override

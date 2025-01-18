@@ -4,41 +4,62 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
+import frc.robot.subsystems.roller.real.RollerSparkMax;
+import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.ShuffleData;
+import frc.robot.Robot;
+import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerData rollerData;
-    private RollerStates rollerStates;
+    private RollerStates rollerState;
     private final PIDController positionController;
     private double lastKnownPosition = 0.0;
     private RollerStates previousState = RollerConstants.RollerStates.STOP;
+    private PIDController feedback;
+    private SimpleMotorFeedforward rollerFF;
 
-    private PIDController feedback = new PIDController(
-            RollerConstants.kPSim,
-            RollerConstants.kISim,
-            RollerConstants.kDSim);
+    private ShuffleData<Double> rollerVelocityLog;
+    private ShuffleData<Double> rollerVoltageLog;
+    private ShuffleData<Double> rollerCurrentLog;
+    private ShuffleData<String> stateLog;
+    private ShuffleData<Double> rollerPositionLog;
+    private ShuffleData<Double> rollerLastKnownPositionLog;
 
-    private SimpleMotorFeedforward rollerFF = new SimpleMotorFeedforward(
-            RollerConstants.kSSim,
-            RollerConstants.kVSim,
-            RollerConstants.kASim);
-
-    private ShuffleData<Double> RollerVelocityLog = new ShuffleData<Double>(this.getName(), "roller velocity", 0.0);
-    private ShuffleData<Double> RollerVoltageLog = new ShuffleData<Double>(this.getName(), "roller voltage", 0.0);
-    private ShuffleData<Double> RollerCurrentLog = new ShuffleData<Double>(this.getName(), "roller current", 0.0);
-    private ShuffleData<String> StateLog = new ShuffleData<String>(this.getName(), "state", RollerStates.STOP.name());
-    private ShuffleData<Double> RollerPositionLog = new ShuffleData<Double>(this.getName(), "roller position", 0.0);
-    private ShuffleData<Double> RollerLastKnownPositionLog = new ShuffleData<Double>(this.getName(), "roller last known position", 0.0);
-
-    public Roller(RollerIO rollerIO) {
-        this.rollerIO = rollerIO;
+    public Roller(Implementations implementation, PIDController feedback, SimpleMotorFeedforward rollerFF) {
+        switch(implementation) {
+            case ALGAE:
+                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Algae.motorId);
+                break;
+            case CORAL:
+                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Coral.motorId);
+                break;
+            case SCORING:
+                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Scoring.motorId);
+                break;
+        }
+        
+        String name = implementation.name();
+        this.feedback = feedback;
+        this.rollerFF = rollerFF;
         this.positionController = new PIDController(15, 0, 10);
-        this.rollerStates = RollerConstants.RollerStates.STOP;
+        this.rollerState = RollerConstants.RollerStates.STOP;
         rollerData = new RollerData();
+
+        rollerVelocityLog = new ShuffleData<>(getName(), name + " Velocity", 0.0);
+        rollerVoltageLog = new ShuffleData<>(getName(), name + " Voltage", 0.0);
+        rollerCurrentLog = new ShuffleData<>(getName(), name + " Current", 0.0);
+        stateLog = new ShuffleData<>(getName(), "State", RollerStates.STOP.name());
+        rollerPositionLog = new ShuffleData<>(getName(), "Position", 0.0);
+        rollerLastKnownPositionLog = new ShuffleData<>(getName(), "Last Known Position", 0.0);
     }
     
+    public RollerIO getRollerIO() {
+        return rollerIO;
+    }
+
     public void setVoltage(double volts) {
         rollerIO.setVoltage(volts);
     }
@@ -53,24 +74,24 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public RollerStates getState() {
-        return rollerStates;
+        return rollerState;
     }
 
-    public void setState(RollerStates rollerStates) {
-        this.rollerStates = rollerStates;
+    public void setState(RollerStates rollerState) {
+        this.rollerState = rollerState;
     }
 
     public void updateLastKnownPosition() {
-        if (rollerStates == RollerConstants.RollerStates.MAINTAIN && previousState != RollerConstants.RollerStates.MAINTAIN) {
+        if (rollerState == RollerConstants.RollerStates.MAINTAIN && previousState != RollerConstants.RollerStates.MAINTAIN) {
             lastKnownPosition = rollerData.rollerPositionRotations; 
         }
-        previousState = rollerStates;
+        previousState = rollerState;
     }
 
     public void runRollerStates() {
         updateLastKnownPosition();
         
-        switch(rollerStates) {
+        switch(rollerState) {
             case RUN:
                 run();
                 break;
@@ -102,12 +123,12 @@ public abstract class Roller extends SubsystemBase {
         rollerIO.updateData(rollerData);
         runRollerStates();
 
-        RollerVelocityLog.set(rollerData.rollerVelocityRadPerSec);
-        RollerVoltageLog.set(rollerData.rollerAppliedVolts);
-        RollerCurrentLog.set(rollerData.currentAmps);
-        RollerPositionLog.set(rollerData.rollerPositionRotations);
-        RollerLastKnownPositionLog.set(lastKnownPosition);
-        StateLog.set(rollerStates.name());
+        rollerVelocityLog.set(rollerData.rollerVelocityRadPerSec);
+        rollerVoltageLog.set(rollerData.rollerAppliedVolts);
+        rollerCurrentLog.set(rollerData.currentAmps);
+        rollerPositionLog.set(rollerData.rollerPositionRotations);
+        rollerLastKnownPositionLog.set(lastKnownPosition);
+        stateLog.set(rollerState.name());
     }
 
 }
