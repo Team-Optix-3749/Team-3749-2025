@@ -28,34 +28,23 @@ public class ToPos {
 
         // Check if the direct path intersects the obstacle
         if (intersectsObstacle(initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius)) {
-            System.out.println("Obstacle detected! Adding detour waypoint...");
+            System.out.println("Obstacle detected! Calculating detour...");
 
-            // Calculate detours
-            List<Translation2d> detours = calculateOptimizedDetours(
+            // Generate a smooth Bezier detour around the obstacle
+            List<Translation2d> bezierControlPoints = calculateBezierControlPoints(
                 initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius
             );
 
-            if (detours != null && !detours.isEmpty()) {
-                for (Translation2d detour : detours) {
-                    waypoints.add(new Waypoint(detour, detour, detour));
-                    System.out.println("Added detour waypoint: " + detour);
-                }
-            } else {
-                System.out.println("Failed to calculate detour. Path generation aborted.");
-                return null;
+            for (Translation2d controlPoint : bezierControlPoints) {
+                waypoints.add(new Waypoint(controlPoint, controlPoint, controlPoint));
             }
+            System.out.println("Added Bezier control points: " + bezierControlPoints);
         } else {
             System.out.println("No obstacle detected. Using direct path.");
         }
 
         // Add final waypoint
         waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
-
-        // Validate waypoints
-        if (waypoints.size() < 2) {
-            System.out.println("Invalid path: Not enough waypoints.");
-            return null;
-        }
 
         // Generate and return the trajectory
         try {
@@ -80,39 +69,23 @@ public class ToPos {
         Translation2d closestPoint = start.plus(direction.times(projection));
 
         double distanceToObstacle = closestPoint.getDistance(center);
-        boolean intersects = distanceToObstacle < radius && projection > 0 && projection < start.getDistance(end);
-
-        if (intersects) {
-            System.out.println("Intersection detected! Closest point: " + closestPoint + ", Distance to obstacle: " + distanceToObstacle);
-        }
-
-        return intersects;
+        return distanceToObstacle < radius && projection > 0 && projection < start.getDistance(end);
     }
 
-    private static List<Translation2d> calculateOptimizedDetours(Translation2d start, Translation2d end, Translation2d center, double radius) {
-        // Generate two possible detours around the obstacle
+    private static List<Translation2d> calculateBezierControlPoints(Translation2d start, Translation2d end, Translation2d center, double radius) {
+        List<Translation2d> controlPoints = new ArrayList<>();
+
         Translation2d direction = end.minus(start).div(start.getDistance(end));
         Translation2d perpendicular = new Translation2d(-direction.getY(), direction.getX());
 
+        // Generate two detour control points
         Translation2d detour1 = center.plus(perpendicular.times(radius + 0.5));
         Translation2d detour2 = center.minus(perpendicular.times(radius + 0.5));
 
-        // Calculate costs (distance + deviation angle)
-        double cost1 = detour1.getDistance(start) + detour1.getDistance(end);
-        double cost2 = detour2.getDistance(start) + detour2.getDistance(end);
+        controlPoints.add(detour1);
+        controlPoints.add(center); // Optional: Add the obstacle center as an intermediate point
+        controlPoints.add(detour2);
 
-        // Choose the lower-cost detour
-        List<Translation2d> selectedDetour = new ArrayList<>();
-        if (cost1 < cost2) {
-            selectedDetour.add(detour1);
-        } else {
-            selectedDetour.add(detour2);
-        }
-
-        // Add intermediate waypoints for smooth transitions
-        Translation2d midPoint = center.plus(direction.times(radius + 1.0));
-        selectedDetour.add(midPoint);
-
-        return selectedDetour;
+        return controlPoints;
     }
 }
