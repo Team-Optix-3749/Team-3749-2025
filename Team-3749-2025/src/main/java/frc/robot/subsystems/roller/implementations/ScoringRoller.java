@@ -11,16 +11,20 @@ public class ScoringRoller extends Roller {
     private RollerData rollerData;
     
     public ScoringRoller() {
-        super(Implementations.SCORING, velocityController(), FF());
+        super(Implementations.SCORING, velocityController(), FF(), positionController());
         this.rollerData = new RollerData();
     }
 
     public static PIDController velocityController() {
-        return new PIDController(RollerConstants.Scoring.kPSim, RollerConstants.Scoring.kISim, RollerConstants.Scoring.kDSim);
+        return new PIDController(RollerConstants.Scoring.kPVelocity, RollerConstants.Scoring.kIVelocity, RollerConstants.Scoring.kDVelocity);
     }
 
     public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Scoring.kPSim, RollerConstants.Scoring.kPSim, RollerConstants.Scoring.kPSim);
+        return new SimpleMotorFeedforward(RollerConstants.Scoring.kSVelocity, RollerConstants.Scoring.kVVelocity, RollerConstants.Scoring.kAVelocity);
+    }
+
+    public static PIDController positionController() {
+        return new PIDController(RollerConstants.Scoring.kPPosition, RollerConstants.Scoring.kIPosition, RollerConstants.Scoring.kDPosition);
     }
 
     @Override

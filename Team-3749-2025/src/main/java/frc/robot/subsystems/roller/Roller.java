@@ -28,7 +28,7 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<Double> rollerPositionLog;
     private ShuffleData<Double> rollerLastKnownPositionLog;
 
-    public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF) {
+    public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF, PIDController positionController) {
         switch(implementation) {
             case ALGAE:
                 rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Algae.motorId);
@@ -44,7 +44,7 @@ public abstract class Roller extends SubsystemBase {
         String name = implementation.name();
         this.velocityController = velocityController;
         this.rollerFF = rollerFF;
-        this.positionController = new PIDController(15, 0, 10);
+        this.positionController = positionController;
         this.rollerState = RollerConstants.RollerStates.STOP;
         rollerData = new RollerData();
 

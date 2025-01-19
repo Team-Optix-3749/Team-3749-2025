@@ -6,12 +6,16 @@ public class RollerConstants {
         public static final double gearRatio = 1.0;
         public static final double measurementNoise = 0.0;
 
-        public static final double kPSim = 10.0;
-        public static final double kISim = 0.0;
-        public static final double kDSim = 0.0;
-        public static final double kSSim = 0.0;
-        public static final double kVSim = 0.02;
-        public static final double kASim = 0.0;
+        public static final double kPVelocity = 10.0;
+        public static final double kIVelocity = 0.0;
+        public static final double kDVelocity = 0.0;
+        public static final double kSVelocity = 0.0;
+        public static final double kVVelocity = 0.02;
+        public static final double kAVelocity = 0.0;
+
+        public static final double kPPosition = 15.0;
+        public static final double kIPosition = 0.0;
+        public static final double kDPosition = 10.0;
 
         public static final double velocity = 5.0;
     }
@@ -21,12 +25,16 @@ public class RollerConstants {
         public static final double gearRatio = 1.0;
         public static final double measurementNoise = 0.0;
 
-        public static final double kPSim = 10.0;
-        public static final double kISim = 0.0;
-        public static final double kDSim = 0.0;
-        public static final double kSSim = 0.0;
-        public static final double kVSim = 0.02;
-        public static final double kASim = 0.0;
+        public static final double kPVelocity = 10.0;
+        public static final double kIVelocity = 0.0;
+        public static final double kDVelocity = 0.0;
+        public static final double kSVelocity = 0.0;
+        public static final double kVVelocity = 0.02;
+        public static final double kAVelocity = 0.0;
+
+        public static final double kPPosition = 15.0;
+        public static final double kIPosition = 0.0;
+        public static final double kDPosition = 10.0;
 
         public static final double velocity = 7.0;
     }
@@ -36,12 +44,16 @@ public class RollerConstants {
         public static final double gearRatio = 1.0;
         public static final double measurementNoise = 0.0;
 
-        public static final double kPSim = 10.0;
-        public static final double kISim = 0.0;
-        public static final double kDSim = 0.0;
-        public static final double kSSim = 0.0;
-        public static final double kVSim = 0.02;
-        public static final double kASim = 0.0;
+        public static final double kPVelocity = 10.0;
+        public static final double kIVelocity = 0.0;
+        public static final double kDVelocity = 0.0;
+        public static final double kSVelocity = 0.0;
+        public static final double kVVelocity = 0.02;
+        public static final double kAVelocity = 0.0;
+
+        public static final double kPPosition = 15.0;
+        public static final double kIPosition = 0.0;
+        public static final double kDPosition = 10.0;
 
         public static final double velocity = 10.0;
     }
