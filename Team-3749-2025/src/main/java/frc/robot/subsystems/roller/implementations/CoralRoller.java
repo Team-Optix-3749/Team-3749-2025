@@ -9,10 +9,10 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 public class CoralRoller extends Roller {
     
     public CoralRoller() {
-        super(Implementations.CORAL, feedBack(), FF());
+        super(Implementations.CORAL, velocityController(), FF());
     }
 
-    public static PIDController feedBack() {
+    public static PIDController velocityController() {
         return new PIDController(RollerConstants.Coral.kPSim, RollerConstants.Coral.kISim, RollerConstants.Coral.kDSim);
     }
 

@@ -9,10 +9,10 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 public class AlgaeRoller extends Roller {
 
     public AlgaeRoller() {
-        super(Implementations.ALGAE, feedBack(), FF()); 
+        super(Implementations.ALGAE, velocityController(), FF()); 
     }
 
-    public static PIDController feedBack() {
+    public static PIDController velocityController() {
         return new PIDController(RollerConstants.Algae.kPSim, RollerConstants.Algae.kISim, RollerConstants.Algae.kDSim);
     }
 

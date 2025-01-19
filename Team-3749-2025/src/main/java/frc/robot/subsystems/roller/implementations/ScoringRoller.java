@@ -11,11 +11,11 @@ public class ScoringRoller extends Roller {
     private RollerData rollerData;
     
     public ScoringRoller() {
-        super(Implementations.SCORING, feedBack(), FF());
+        super(Implementations.SCORING, velocityController(), FF());
         this.rollerData = new RollerData();
     }
 
-    public static PIDController feedBack() {
+    public static PIDController velocityController() {
         return new PIDController(RollerConstants.Scoring.kPSim, RollerConstants.Scoring.kISim, RollerConstants.Scoring.kDSim);
     }
 

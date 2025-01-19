@@ -15,11 +15,11 @@ public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerData rollerData;
     private RollerStates rollerState;
-    private final PIDController positionController;
-    private double lastKnownPosition = 0.0;
     private RollerStates previousState = RollerConstants.RollerStates.STOP;
-    private PIDController feedback;
+    private PIDController positionController;
+    private PIDController velocityController;
     private SimpleMotorFeedforward rollerFF;
+    private double lastKnownPosition = 0.0;
 
     private ShuffleData<Double> rollerVelocityLog;
     private ShuffleData<Double> rollerVoltageLog;
@@ -28,7 +28,7 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<Double> rollerPositionLog;
     private ShuffleData<Double> rollerLastKnownPositionLog;
 
-    public Roller(Implementations implementation, PIDController feedback, SimpleMotorFeedforward rollerFF) {
+    public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF) {
         switch(implementation) {
             case ALGAE:
                 rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Algae.motorId);
@@ -42,7 +42,7 @@ public abstract class Roller extends SubsystemBase {
         }
         
         String name = implementation.name();
-        this.feedback = feedback;
+        this.velocityController = velocityController;
         this.rollerFF = rollerFF;
         this.positionController = new PIDController(15, 0, 10);
         this.rollerState = RollerConstants.RollerStates.STOP;
@@ -65,7 +65,7 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public void setVelocity(double velocityRadPerSec) {
-        double voltage = feedback.calculate(
+        double voltage = velocityController.calculate(
             rollerData.rollerVelocityRadPerSec, 
             velocityRadPerSec) +
             rollerFF.calculate(velocityRadPerSec);
