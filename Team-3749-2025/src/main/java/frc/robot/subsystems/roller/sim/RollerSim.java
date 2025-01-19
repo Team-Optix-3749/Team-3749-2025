@@ -14,7 +14,6 @@ public class RollerSim implements RollerIO {
     private double momentOfInertia;
     private double gearRatio;
     private double measurementNoise;
-    private String name;
 
     public RollerSim(Implementations implementation) {
         switch(implementation) {

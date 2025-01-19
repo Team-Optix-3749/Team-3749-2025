@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.Roller;
-import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
@@ -60,27 +59,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    // algaeRoller.setState(RollerConstants.RollerStates.RUN);
-    // System.out.println("Coral State: " + coralRoller.getState());
-    // System.out.println("Algae State: " + algaeRoller.getState());
-
-    // coralRoller.setState(RollerConstants.RollerStates.RUN);
-    // scoringRoller.setState(RollerConstants.RollerStates.RUN);
     swerve.setBreakMode(false);
   }
 
   @Override
   public void disabledPeriodic() {
-    // if (Timer.getFPGATimestamp() > 3 && Timer.getFPGATimestamp() < 5) {
-    //   algaeRoller.setState(RollerConstants.RollerStates.STOP);
-    //   // coralRoller.setState(RollerConstants.RollerStates.STOP);
-    //   // scoringRoller.setState(RollerConstants.RollerStates.STOP);
-    // } 
-    //  if (Timer.getFPGATimestamp() > 6)
-    //  System.out.println("CHANGED Coral state: " + coralRoller.getState());
-    //   algaeRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-      // coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-      // scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
   }
 
   @Override

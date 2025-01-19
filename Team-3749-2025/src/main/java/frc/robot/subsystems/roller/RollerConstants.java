@@ -65,8 +65,8 @@ public class RollerConstants {
     }
 
     public enum Implementations {
-        CORAL,
         ALGAE,
+        CORAL,
         SCORING
     }
 }

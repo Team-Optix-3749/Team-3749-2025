@@ -12,13 +12,14 @@ public class RunCommand extends Command {
 
     @Override
     public void initialize() {
+        Robot.algaeRoller.setState(targetState);
+        Robot.coralRoller.setState(targetState);
+        Robot.scoringRoller.setState(targetState);
     }
 
     @Override
     public void execute() {
-        Robot.algaeRoller.setState(targetState);
-        Robot.coralRoller.setState(targetState);
-        Robot.scoringRoller.setState(targetState);
+        
     }
 
     @Override

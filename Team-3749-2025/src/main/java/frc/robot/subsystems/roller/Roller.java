@@ -15,7 +15,6 @@ public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerData rollerData;
     private RollerStates rollerState;
-    private RollerStates previousState = RollerConstants.RollerStates.STOP;
     private PIDController positionController;
     private PIDController velocityController;
     private SimpleMotorFeedforward rollerFF;
@@ -79,18 +78,12 @@ public abstract class Roller extends SubsystemBase {
 
     public void setState(RollerStates rollerState) {
         this.rollerState = rollerState;
-    }
-
-    public void updateLastKnownPosition() {
-        if (rollerState == RollerConstants.RollerStates.MAINTAIN && previousState != RollerConstants.RollerStates.MAINTAIN) {
+        if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
             lastKnownPosition = rollerData.rollerPositionRotations; 
         }
-        previousState = rollerState;
     }
 
-    public void runRollerStates() {
-        updateLastKnownPosition();
-        
+    public void runRollerStates() {        
         switch(rollerState) {
             case RUN:
                 run();
