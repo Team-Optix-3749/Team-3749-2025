@@ -4,6 +4,7 @@
 
 package frc.robot;
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -99,6 +100,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+       NetworkTableInstance.getDefault().flush();
+
   }
 
   @Override
