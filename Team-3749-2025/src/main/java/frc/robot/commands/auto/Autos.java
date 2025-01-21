@@ -99,5 +99,29 @@ public class Autos {
        return AutoUtils.getSingleTrajectory("Chair Game");
 
     }
+    public static Command getScore_Pick() {
+        return AutoUtils.getSingleTrajectory("Score and Pick Note");
+ 
+     }
+
+    public static Command get1Piece() {
+        return AutoUtils.getSingleTrajectory("1-r3");
+    }
+
+    public static Command getPushLeftAndTaxi() {
+        return AutoUtils.getSingleTrajectory("push-left-and-taxi");
+    }
+
+    public static Command getPushRightAndTaxi() {
+        return AutoUtils.getSingleTrajectory("push-right-and-taxi");
+    }
+
+    public static Command get3Piece() {
+        return AutoUtils.getSingleTrajectory("3-piece-new");
+    }
+
+    public static Command getTeamTaxi() {
+        return AutoUtils.getSingleTrajectory("Team Taxi");
+    }
 
 }

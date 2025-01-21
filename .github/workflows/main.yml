@@ -1,4 +1,4 @@
-name: CI
+name: Build Check
 
 on:
   push:
@@ -8,8 +8,10 @@ on:
 
 jobs:
   build:
+    name: Build Check
+  
     runs-on: ubuntu-latest
-    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    container: wpilib/roborio-cross-ubuntu:2025-24.04
 
     steps:
     - uses: actions/checkout@v4
