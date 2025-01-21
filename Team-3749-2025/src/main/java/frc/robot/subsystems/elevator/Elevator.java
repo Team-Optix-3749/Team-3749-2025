@@ -1,8 +1,19 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.LinearPlantInversionFeedforward;
+import edu.wpi.first.math.controller.LinearQuadraticRegulator;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.LinearSystemLoop;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -29,18 +40,50 @@ public class Elevator extends SubsystemBase {
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
 
-    private ProfiledPIDController pidController = new ProfiledPIDController(
-            ElevatorConstants.ElevatorControl.kPSim,
-            0,
-            ElevatorConstants.ElevatorControl.kDSim,
-            new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
-                    ElevatorConstants.ElevatorControl.maxA));
+    /**
+     * NX is represents a vector containing X numbers
+     * The first NX is the number of states (ex. position and velocity would make
+     * N2)
+     * The second NX is the number of inputs (ex. Voltage would make N1)
+     * The third NX is the number of outputs (ex. position and velocity)
+     */
 
-    private ElevatorFeedforward feedforward = new ElevatorFeedforward(
-            ElevatorConstants.ElevatorControl.kSSim,
-            ElevatorConstants.ElevatorControl.kGSim,
-            ElevatorConstants.ElevatorControl.kVSim,
-            ElevatorConstants.ElevatorControl.kASim);
+    // A system describing the elevator
+    private LinearSystem<N2, N1, N2> elevatorSystem = LinearSystemId.identifyPositionSystem(
+            ElevatorConstants.ElevatorControl.kVSim, // kV from SysId
+            ElevatorConstants.ElevatorControl.kASim); // kA from SysId
+
+    // a PID controller with values calculated based on desired error ranges
+    private LinearQuadraticRegulator<N2, N1, N2> controller = new LinearQuadraticRegulator<>(
+            elevatorSystem, // Linear System
+            VecBuilder.fill(0.1, 0.5), // maximum desired error for positoin and velocity, respectively
+            VecBuilder.fill(12), // maximum voltage that will be applied
+            0.02); // discrete time step size
+
+    // a filter to avoid mismeasurements
+    private KalmanFilter<N2, N1, N2> filter = new KalmanFilter<>(
+            Nat.N2(), // placeholder for 2 natural numbers: state number
+            Nat.N2(), // placeholder for 2 natural numbers: output number
+            elevatorSystem, // linear system
+            VecBuilder.fill(0.01, 0.05), // std dev for states: how accurate is our model
+            VecBuilder.fill(0.000005, 0.00001), // std dev for measurements: how good are our encoders
+            0.02); // discrete time step size
+
+    // a feedforward controller based on the system's dynamics
+    private LinearPlantInversionFeedforward<N2, N1, N2> feedforward = new LinearPlantInversionFeedforward<>(
+            elevatorSystem,
+            0.02);
+
+    // all of the above combined to one control loop
+    private LinearSystemLoop<N2, N1, N2> controlLoop;
+
+    // utilized only for the Motion Profile
+    // private ProfiledPIDController pidController = new ProfiledPIDController(
+    // 0,
+    // 0,
+    // 0,
+    // new Constraints(ElevatorConstants.ElevatorControl.maxV,
+    // ElevatorConstants.ElevatorControl.maxA));
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
@@ -72,11 +115,16 @@ public class Elevator extends SubsystemBase {
             .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
     public Elevator() {
+        controller.latencyCompensate(elevatorSystem, 0.02, 0.025);
+        controlLoop = new LinearSystemLoop<>(controller, feedforward, filter, 12);
+
         if (Robot.isSimulation()) {
-            elevatorio = new ElevatorSimulation();
+            elevatorio = new ElevatorSimulation(elevatorSystem);
         } else {
             elevatorio = new ElevatorSparkMax();
         }
+
+        System.out.println(controlLoop.toString());
     }
 
     public ElevatorStates getState() {
@@ -116,6 +164,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setState(ElevatorStates state) {
+        System.out.println("SET STATE");
         this.state = state;
         switch (state) {
             case STOP:
@@ -144,7 +193,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setGoal(double height) {
-        pidController.setGoal(height);
+        controlLoop.setNextR(VecBuilder.fill(height, 0));
     }
 
     private void runState() {
@@ -159,13 +208,9 @@ public class Elevator extends SubsystemBase {
     }
 
     private void moveToGoal() {
-        State firstState = pidController.getSetpoint();
-        double pidVoltage = pidController.calculate(getPositionMeters());
-
-        State nextState = pidController.getSetpoint();
-        double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
-
-        elevatorio.setVoltage(ffVoltage + pidVoltage);
+        // just to advance the motion profile
+        controlLoop.predict(0.02);
+        elevatorio.setVoltage(controlLoop.getU(0));
     }
 
     private void runStateStop() {
@@ -190,13 +235,21 @@ public class Elevator extends SubsystemBase {
         rightTempCelciusLog.set(data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
+
+        SmartDashboard.putString("State", state.name());
+
         SmartDashboard.putData("elevator mechanism", mech);
+    }
+
+    private void updateData() {
+        elevatorio.updateData(data);
+        controlLoop.correct(VecBuilder.fill(data.positionMeters, data.velocityMetersPerSecond));
+        ;
     }
 
     @Override
     public void periodic() {
-        elevatorio.updateData(data);
-
+        updateData();
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())

@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.commands.auto.Autos;
+import frc.robot.commands.elevator.SetElevatorState;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.utils.JoystickIO;
 
 public class RobotContainer {
@@ -28,12 +30,12 @@ public class RobotContainer {
     RobotController.setBrownoutVoltage(7.0);
 
     // robot setup
-    JoystickIO.getButtonBindings();
+    JoystickIO.setButtonBindings();
     AutoUtils.initAuto();
     
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getSelectedCommand();
+    return new SetElevatorState(ElevatorStates.L4);
   }
 }
