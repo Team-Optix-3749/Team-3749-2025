@@ -33,7 +33,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
@@ -44,7 +44,6 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
 
-  public static AlgaeArm algaeArm = new AlgaeArm();
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
 
@@ -93,7 +92,7 @@ public class Robot extends TimedRobot {
 
 			case REPLAY:
 				// Replaying a log, set up replay source
-				setUseTiming(false); // Run as fast as possible
+				// setUseTiming(false); // Run as fast as possible
 				String logPath = LogFileUtil.findReplayLog();
 				Logger.setReplaySource(new WPILOGReader(logPath));
 				Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));

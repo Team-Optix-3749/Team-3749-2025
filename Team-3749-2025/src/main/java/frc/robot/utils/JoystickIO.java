@@ -33,10 +33,10 @@ public class JoystickIO {
     private static final Command StopCommand = new StopCommand();
 
 
-    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
-    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
-    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
-    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
+    // private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
+    // private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
+    // private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
+    // private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
   
 // 	private static final SetArmState<CoralConstants.ArmStates> coralPickup = new SetArmState<CoralConstants.ArmStates>(
 // 			Robot.coralArm,
@@ -85,10 +85,10 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(l1);
-        operator.b().onTrue(l2);
-        operator.x().onTrue(l3);
-        operator.y().onTrue(l4);
+        // operator.a().onTrue(l1);
+        // operator.b().onTrue(l2);
+        // operator.x().onTrue(l3);
+        // operator.y().onTrue(l4);
       
 //      operator.a().whileTrue(coralMoveDown);
 // 		  operator.b().whileTrue(coralMoveUp);

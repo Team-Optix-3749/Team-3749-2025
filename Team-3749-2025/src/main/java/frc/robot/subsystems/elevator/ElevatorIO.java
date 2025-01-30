@@ -1,11 +1,15 @@
 package frc.robot.subsystems.elevator;
 
+import org.littletonrobotics.junction.AutoLog;
+
 /**
  * IO implementation for elevator subsystem
  *
  * @author Dhyan Soni
  */
 public interface ElevatorIO {
+
+    @AutoLog
     public static class ElevatorData {
         public double positionMeters = 0;
         public double velocityMetersPerSecond = 0;
