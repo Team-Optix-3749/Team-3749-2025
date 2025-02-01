@@ -3,21 +3,19 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.elevator.Elevator;
 
-import frc.robot.subsystems.arm.algae.AlgaeArm;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.elevator.Elevator;
-
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
@@ -25,8 +23,14 @@ import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
@@ -37,7 +41,6 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
 
-  public static AlgaeArm algaeArm = new AlgaeArm();
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
 
@@ -49,6 +52,54 @@ public class Robot extends TimedRobot {
   private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
   private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
+  PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+  
+  public Robot() {
+		// Record metadata
+		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+		Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+		Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+		Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+		Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+		switch (BuildConstants.DIRTY) {
+			case 0:
+				Logger.recordMetadata("GitDirty", "All changes committed");
+				break;
+			case 1:
+				Logger.recordMetadata("GitDirty", "Uncomitted changes");
+				break;
+			default:
+				Logger.recordMetadata("GitDirty", "Unknown");
+				break;
+		}
+
+		// Set up data receivers & replay source
+		switch (Constants.currentMode) {
+			case REAL:
+				// Running on a real robot, log to a USB stick ("/U/logs")
+				Logger.addDataReceiver(new WPILOGWriter());
+				Logger.addDataReceiver(new NT4Publisher());
+				break;
+
+			case SIM:
+				// Running a physics simulator, log to NT
+				Logger.addDataReceiver(new WPILOGWriter());
+				Logger.addDataReceiver(new NT4Publisher());
+				break;
+
+			case REPLAY:
+				// Replaying a log, set up replay source
+				setUseTiming(false); // Run as fast as possible
+				String logPath = LogFileUtil.findReplayLog();
+				Logger.setReplaySource(new WPILOGReader(logPath));
+				Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+				break;
+		}
+
+		// Start AdvantageKit logger
+		Logger.start();
+	}
+
 
   @Override
   public void robotInit() {
