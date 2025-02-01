@@ -20,9 +20,11 @@ public interface ElevatorIO {
         public double rightTempCelcius = 0;
     }
 
+    /**Updates the loggable inputs */
     public default void updateData(ElevatorData data) {
     };
 
+    /**Runs the motor as a set voltage */
     public default void setVoltage(double volts) {
     };
 }

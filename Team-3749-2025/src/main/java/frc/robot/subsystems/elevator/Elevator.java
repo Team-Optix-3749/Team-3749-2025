@@ -42,6 +42,7 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kVSim,
             ElevatorConstants.ElevatorControl.kASim);
 
+    //logging
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
@@ -67,27 +68,35 @@ public class Elevator extends SubsystemBase {
     // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
     // "kAData", ElevatorConstants.ElevatorControl.kASim);
 
+    //mech 2d
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
     private MechanismLigament2d elevatorMech = root
             .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
+
     public Elevator() {
+        //if simulation
         if (Robot.isSimulation()) {
             elevatorio = new ElevatorSimulation();
-        } else {
+        } 
+        //if real
+        else {
             elevatorio = new ElevatorSparkMax();
         }
     }
 
+    //returns the current state
     public ElevatorStates getState() {
         return state;
     }
 
+    //returns the position of the elevator in meters
     public double getPositionMeters() {
         return data.positionMeters;
     }
 
+    //returns the velocity in meters per second
     public double getVelocityRadPerSec() {
         return data.velocityMetersPerSecond;
     }
@@ -116,6 +125,7 @@ public class Elevator extends SubsystemBase {
         elevatorio.setVoltage(volts);
     }
 
+    //sets the state of the elevator
     public void setState(ElevatorStates state) {
         this.state = state;
         switch (state) {
@@ -148,6 +158,7 @@ public class Elevator extends SubsystemBase {
         pidController.setGoal(height);
     }
 
+    //moves the elevator if is not in the STOP state
     private void runState() {
         switch (state) {
             case STOP:
@@ -159,6 +170,7 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    //moves the elevator to setpoint
     private void moveToGoal() {
         State firstState = pidController.getSetpoint();
         double pidVoltage = pidController.calculate(getPositionMeters());
@@ -173,16 +185,19 @@ public class Elevator extends SubsystemBase {
         stop();
     }
 
+    //sets voltage to 0
     public void stop() {
         elevatorio.setVoltage(0);
     }
 
     private void logData() {
+        //logs position, velocity, and acceleration
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionMetersLog.set(data.positionMeters);
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
         accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
 
+        //logs input volts for left and right motors
         inputVoltsLog.set(data.inputVolts);
         leftAppliedVoltsLog.set(data.leftAppliedVolts);
         rightAppliedVoltsLog.set(data.rightAppliedVolts);
@@ -191,6 +206,7 @@ public class Elevator extends SubsystemBase {
         leftTempCelciusLog.set(data.leftTempCelcius);
         rightTempCelciusLog.set(data.rightTempCelcius);
 
+        //creates mech2d
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
     }

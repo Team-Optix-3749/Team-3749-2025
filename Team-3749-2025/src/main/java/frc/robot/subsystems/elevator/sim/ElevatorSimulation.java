@@ -35,12 +35,15 @@ public class ElevatorSimulation implements ElevatorIO {
     @Override
     public void updateData(ElevatorData data) {
         elevatorSimSystem.update(0.02);
+
+        //finds the velocity and acceleration
         previousVelocity = velocity;
         velocity = elevatorSimSystem.getVelocityMetersPerSecond();
         data.positionMeters = elevatorSimSystem.getPositionMeters();
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
         
+        //sets input volts for left and right motor
         data.inputVolts = inputVolts;
         data.leftAppliedVolts = inputVolts;
         data.rightAppliedVolts = inputVolts;
@@ -52,6 +55,8 @@ public class ElevatorSimulation implements ElevatorIO {
         data.rightTempCelcius = data.leftTempCelcius;
     }
 
+
+    /**Sets the voltage for sim motors */
     @Override
     public void setVoltage(double volts) {
         inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
