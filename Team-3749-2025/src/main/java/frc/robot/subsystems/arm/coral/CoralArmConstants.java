@@ -9,7 +9,7 @@ import edu.wpi.first.math.util.Units;
  * 
  */
 
-public class CoralConstants {
+public class CoralArmConstants {
     public static final int motorId = 0;
     public static final int numMotors = 1;
 
@@ -35,6 +35,7 @@ public class CoralConstants {
     public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70, 1.2217304764
     public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
     public static final double coralPickUpSetPoint_rad = 175 * Math.PI / 180; // 175, 3.05432619099
+    public static final double L1SetPoint_rad = 180 * Math.PI / 180; // placeholder
 
     public static final double maxVelocity = 0;
     public static final double maxAcceleration = 0;
@@ -46,6 +47,7 @@ public class CoralConstants {
         MOVING_DOWN,
         MOVING_UP,
         CORAL_PICKUP,
+        L1,
         HAND_OFF,
         STOWED,
         STOPPED

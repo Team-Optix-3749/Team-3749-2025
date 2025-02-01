@@ -28,4 +28,9 @@ public class CoralRoller extends Roller {
     public void run() {
         setVelocity(RollerConstants.Coral.velocity);
     }
+
+    @Override
+    public void score() {
+        setVelocity(RollerConstants.Coral.scoreVelocity);
+    }
 }

@@ -45,6 +45,7 @@ public class ElevatorConstants {
         L2,
         L3,
         L4,
+        SOURCE,
         MAX,
         STOW
     }
@@ -54,5 +55,6 @@ public class ElevatorConstants {
         public static final double l2Height = Units.inchesToMeters(31.875);
         public static final double l3Height = Units.inchesToMeters(47.625);
         public static final double l4Height = Units.inchesToMeters(72);
+        public static final double sourceHeight = Units.inchesToMeters(ElevatorSpecs.baseHeight);
     }
 }

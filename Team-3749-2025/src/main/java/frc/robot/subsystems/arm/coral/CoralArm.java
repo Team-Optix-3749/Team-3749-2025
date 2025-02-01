@@ -20,12 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CoralArm extends Arm {
 
-    private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
+    private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
 
     private PIDController controller = new PIDController(
-            CoralConstants.kP,
-            CoralConstants.kI,
-            CoralConstants.kD);
+            CoralArmConstants.kP,
+            CoralArmConstants.kI,
+            CoralArmConstants.kD);
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
@@ -42,17 +42,17 @@ public class CoralArm extends Arm {
         if (Robot.isSimulation()) {
 
             armIO = new ArmSim(
-                CoralConstants.numMotors,
-                CoralConstants.armGearing,
-                CoralConstants.momentOfInertia,
-                CoralConstants.armLength_meters,
-                CoralConstants.armMinAngle_degrees,
-                CoralConstants.armMaxAngle_degrees,
-                CoralConstants.simulateGravity,
-                CoralConstants.armStartingAngle_degrees);
+                CoralArmConstants.numMotors,
+                CoralArmConstants.armGearing,
+                CoralArmConstants.momentOfInertia,
+                CoralArmConstants.armLength_meters,
+                CoralArmConstants.armMinAngle_degrees,
+                CoralArmConstants.armMaxAngle_degrees,
+                CoralArmConstants.simulateGravity,
+                CoralArmConstants.armStartingAngle_degrees);
 
         } else {
-            armIO = new ArmSparkMax(CoralConstants.motorId);
+            armIO = new ArmSparkMax(CoralArmConstants.motorId);
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
     }
@@ -60,13 +60,13 @@ public class CoralArm extends Arm {
     /**
      * @return the current arm state.
      */
-    public CoralConstants.ArmStates getState() {
+    public CoralArmConstants.ArmStates getState() {
         return state;
     }
 
     @Override
     public void stop() {
-        setState(CoralConstants.ArmStates.STOPPED);
+        setState(CoralArmConstants.ArmStates.STOPPED);
     }
 
     /**
@@ -76,17 +76,23 @@ public class CoralArm extends Arm {
 
         switch (state) {
             case STOWED:
-                return data.positionUnits == CoralConstants.stowSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralArmConstants.stowSetPoint_rad,
+                data.positionUnits);
             case HAND_OFF:
-                return data.positionUnits == CoralConstants.handOffSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralArmConstants.handOffSetPoint_rad,
+                data.positionUnits);
             case CORAL_PICKUP:
-                return data.positionUnits == CoralConstants.coralPickUpSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralArmConstants.coralPickUpSetPoint_rad,
+                data.positionUnits);
+            case L1:
+                return UtilityFunctions.withinMargin(0.01, CoralArmConstants.L1SetPoint_rad,
+                data.positionUnits);
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
                 return data.velocityUnits > 0;
             case STOPPED:
-                return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+                return UtilityFunctions.withinMargin(0.01, 0, data.velocityUnits);
             default:
                 return false;
         }
@@ -99,7 +105,7 @@ public class CoralArm extends Arm {
      */
     @Override
     public void setState(Enum<?> state) {
-        this.state = (CoralConstants.ArmStates) state;
+        this.state = (CoralArmConstants.ArmStates) state;
     }
 
     /**
@@ -108,13 +114,16 @@ public class CoralArm extends Arm {
     private void runState() {
         switch (state) {
             case STOWED:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralArmConstants.stowSetPoint_rad) + calculateFeedForward());
                 break;
             case HAND_OFF:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralArmConstants.handOffSetPoint_rad) + calculateFeedForward());
                 break;
             case CORAL_PICKUP:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralArmConstants.coralPickUpSetPoint_rad) + calculateFeedForward());
+                break;
+            case L1:
+                setVoltage(controller.calculate(data.positionUnits, CoralArmConstants.L1SetPoint_rad) + calculateFeedForward());
                 break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
@@ -128,6 +137,10 @@ public class CoralArm extends Arm {
             default:
                 break;
         }
+    }
+
+    public boolean hasPiece(){
+        return false;
     }
 
     /**
@@ -148,7 +161,7 @@ public class CoralArm extends Arm {
     }
 
     private double calculateFeedForward() {
-        double feedForward = CoralConstants.kG * Math.cos(data.positionUnits);
+        double feedForward = CoralArmConstants.kG * Math.cos(data.positionUnits);
         return feedForward;
     }
 
