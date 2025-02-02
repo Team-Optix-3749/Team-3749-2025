@@ -2,18 +2,27 @@ package frc.robot.subsystems.roller.implementations;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
+import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
+import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
     private boolean hasPiece = false;
+    private PhotoelectricIO photoelectricIO;
+    private PhotoelectricData photoelectricData = new PhotoelectricData();
     private RollerData data = new RollerData();
     
     public CoralRoller() {
         super(Implementations.CORAL, velocityController(), FF(), positionController());
+        this.photoelectricIO = new PhotoelectricSim();
+        photoelectricIO.setInitialState(true);
     }
 
     public static PIDController velocityController() {
@@ -36,14 +45,14 @@ public class CoralRoller extends Roller {
     }
 
     public boolean hasPiece() {
-        if (!getIsStableState() && lastVelocity > 0.1) { 
-            hasPiece = true; 
+        if (Robot.isSimulation()) {
+           return hasPiece; 
+        } else {
+            if (!getIsStableState() && lastVelocity > 0.1) { 
+                hasPiece = true; 
+            }
+            return hasPiece;
         }
-        return hasPiece;
-    }
-
-    public void setHasPiece(boolean hasPiece) {
-        this.hasPiece = hasPiece;
     }
 
     public boolean getHasPiece() {
@@ -58,5 +67,21 @@ public class CoralRoller extends Roller {
     @Override
     public void score() {
         setVelocity(RollerConstants.Coral.scoreVelocity);
+    }
+
+    public Command getCurrentCommand(){
+        return this.getCurrentCommand();
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+        photoelectricIO.updateData(photoelectricData);
+
+        if (photoelectricData.sensing) {
+            hasPiece = true;
+        } else {
+            hasPiece = false;
+        }
     }
 }

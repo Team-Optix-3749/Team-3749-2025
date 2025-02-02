@@ -11,7 +11,7 @@ import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
-// import frc.robot.subsystems.roller.sim.PhotoelectricSim;
+import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 
 public class ScoringRoller extends Roller {
     private RollerData rollerData;
@@ -23,7 +23,8 @@ public class ScoringRoller extends Roller {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
         this.rollerData = new RollerData();
         if (Robot.isSimulation()) {
-            // this.photoelectricIO = new PhotoelectricSim();
+            this.photoelectricIO = new PhotoelectricSim();
+            photoelectricIO.setInitialState(true);
         } else {
             this.photoelectricIO = new JTVisiSight(); 
         }
@@ -59,27 +60,31 @@ public class ScoringRoller extends Roller {
     }
 
     public boolean hasPiece() {
-        return hasPiece;
+        return photoelectricData.sensing;
     }
 
     public void setHasPiece(boolean hasPiece) {
         this.hasPiece = hasPiece;
     }
 
-    public Command getCurrentCommand(){
-        return this.getCurrentCommand();
-    }
+    // public Command getCurrentCommand(){
+    //     if (this.getCurrentCommand() != null) {
+    //         return this.getCurrentCommand();
+    //     }
+    //     return null;
+    // }
 
     @Override
     public void periodic() {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
-        // if (Robot.isSimulation()) {
-        //     if (this.getCurrentCommand() != null) {
-        //         photoelectricIO.setSensing(this.getCurrentCommand().getName());
-        //     }
-        // }
-
+        System.out.println("sensing" + photoelectricData.sensing);
+        if (photoelectricData.sensing) {
+            hasPiece = true;
+        } else {
+        
+            hasPiece = false;
+        }
     }
 }
