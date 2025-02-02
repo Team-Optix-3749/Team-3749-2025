@@ -16,14 +16,14 @@ public class IntakeSource extends Command {
 
     @Override
     public void initialize() {
-        if (Robot.scoringRoller.hasPiece()) {
+        if (Robot.chuteRoller.hasPiece()) {
             this.cancel();
         }
         else {
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
             Robot.elevator.setState(ElevatorStates.SOURCE);
             Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN); 
+            Robot.chuteRoller.setState(RollerConstants.RollerStates.INTAKE); 
         }
     }
 
@@ -33,13 +33,13 @@ public class IntakeSource extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.chuteRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         System.out.println("intake source end");
     }
 
     @Override
     public boolean isFinished() {
-        System.out.println("intake source is finishing" + Robot.scoringRoller.hasPiece());
-        return Robot.scoringRoller.hasPiece();
+        System.out.println("intake source is finishing" + Robot.chuteRoller.hasPiece());
+        return Robot.chuteRoller.hasPiece();
     }
 }

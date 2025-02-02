@@ -19,8 +19,8 @@ public class IntakeFloor extends Command {
     public void initialize() {
         Robot.coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
         Robot.elevator.setState(ElevatorStates.STOW);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.RUN);
-        Robot.scoringRoller.setState(RollerStates.STOP);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.INTAKE);
+        Robot.chuteRoller.setState(RollerStates.STOP);
     }
 
     @Override

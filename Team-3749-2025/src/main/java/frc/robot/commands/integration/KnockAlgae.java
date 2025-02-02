@@ -20,7 +20,7 @@ public class KnockAlgae extends Command {
     @Override
     public void initialize() {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
-        Robot.algaeRoller.setState(RollerConstants.RollerStates.RUN);
+        Robot.algaeRoller.setState(RollerConstants.RollerStates.SCORE);
         Robot.elevator.setState(state);
     }
 

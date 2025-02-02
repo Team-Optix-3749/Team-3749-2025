@@ -5,7 +5,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 public class RunCommand extends Command {
-    private static RollerStates targetState = RollerStates.RUN;
+    private static RollerStates targetState = RollerStates.INTAKE;
 
     public RunCommand() {
     }
@@ -14,7 +14,7 @@ public class RunCommand extends Command {
     public void initialize() {
         Robot.algaeRoller.setState(targetState);
         Robot.coralRoller.setState(targetState);
-        Robot.scoringRoller.setState(targetState);
+        Robot.chuteRoller.setState(targetState);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RunCommand extends Command {
     public void end(boolean interrupted) {
         Robot.algaeRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.STOP);
-        Robot.scoringRoller.setState(RollerStates.STOP);        
+        Robot.chuteRoller.setState(RollerStates.STOP);        
     }
     
     @Override

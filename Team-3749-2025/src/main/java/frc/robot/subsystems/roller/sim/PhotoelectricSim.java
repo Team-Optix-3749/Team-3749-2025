@@ -25,7 +25,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
 
     @Override
     public void updateData(PhotoelectricData data) {
-        if (Robot.scoringRoller.getCurrentCommand() != null) {
+        if (Robot.chuteRoller.getCurrentCommand() != null) {
             System.out.println("getCurrentCommand is not null");
             if (scoreTimer == 999999999) { // Initialize timer only once per command
                 System.out.println("get the scoreTimer AGAIN");
@@ -38,7 +38,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
             }
     
             
-            switch (Robot.scoringRoller.getCurrentCommand().getName()) {
+            switch (Robot.chuteRoller.getCurrentCommand().getName()) {
                 case "Handoff": 
                 case "IntakeFloor": 
                 case "IntakeSource":

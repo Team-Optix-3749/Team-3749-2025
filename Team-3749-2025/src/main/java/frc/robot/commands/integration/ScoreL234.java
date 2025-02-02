@@ -20,17 +20,17 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
-        if (Robot.scoringRoller.hasPiece()) { 
+        if (Robot.chuteRoller.hasPiece()) { 
             Robot.elevator.setState(elevatorState);
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+            Robot.chuteRoller.setState(RollerConstants.RollerStates.MAINTAIN);
             Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
             System.out.println("scoreL234 start");
         } else if (Robot.coralRoller.hasPiece()) {
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
+            Robot.chuteRoller.setState(RollerConstants.RollerStates.INTAKE);
         } else {
             this.cancel();
         }
@@ -44,12 +44,12 @@ public class ScoreL234 extends Command {
             handoffComplete = true;
         }
 
-        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) { 
-            Robot.scoringRoller.setState(RollerStates.MAINTAIN);
+        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.chuteRoller.hasPiece()) { 
+            Robot.chuteRoller.setState(RollerStates.MAINTAIN);
             Robot.elevator.setState(elevatorState);
         }
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
+            Robot.chuteRoller.setState(RollerConstants.RollerStates.SCORE);
         }
     }
 
@@ -57,14 +57,14 @@ public class ScoreL234 extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.STOW);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.chuteRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         System.out.println("scoreL234 end");
     }
 
     @Override
     public boolean isFinished() {
-        System.out.println("scoreL234 finishing: " + Robot.scoringRoller.hasPiece());
-        return !Robot.scoringRoller.hasPiece();
+        System.out.println("scoreL234 finishing: " + Robot.chuteRoller.hasPiece());
+        return !Robot.chuteRoller.hasPiece();
     }
 }

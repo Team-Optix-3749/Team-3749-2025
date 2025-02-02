@@ -15,7 +15,7 @@ public class StopCommand extends Command {
     public void initialize() {
         Robot.algaeRoller.setState(targetState);
         Robot.coralRoller.setState(targetState);
-        Robot.scoringRoller.setState(targetState);
+        Robot.chuteRoller.setState(targetState);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class StopCommand extends Command {
     public void end(boolean interrupted) {
         Robot.algaeRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.STOP);
-        Robot.scoringRoller.setState(RollerStates.STOP);    
+        Robot.chuteRoller.setState(RollerStates.STOP);    
     }
     
     @Override

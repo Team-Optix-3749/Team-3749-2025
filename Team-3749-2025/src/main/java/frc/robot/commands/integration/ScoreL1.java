@@ -20,7 +20,7 @@ public class ScoreL1 extends Command {
         Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
         Robot.coralArm.setState(CoralConstants.ArmStates.L1);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.chuteRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     @Override

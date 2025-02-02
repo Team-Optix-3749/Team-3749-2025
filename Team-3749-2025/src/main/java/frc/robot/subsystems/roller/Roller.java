@@ -71,11 +71,6 @@ public abstract class Roller extends SubsystemBase {
 
         setVoltage(voltage);
     }
-    
-    // will add functionality later
-    public boolean isAlgaeRemoved() {
-        return false;
-    }
 
     public RollerStates getState() {
         return rollerState;
@@ -90,8 +85,8 @@ public abstract class Roller extends SubsystemBase {
 
     public void runRollerStates() {        
         switch(rollerState) {
-            case RUN:
-                run();
+            case INTAKE:
+                intake();
                 break;
             case MAINTAIN:
                 maintain();
@@ -105,7 +100,7 @@ public abstract class Roller extends SubsystemBase {
         }
     }
 
-    public abstract void run();
+    public abstract void intake();
 
     public void maintain() {
         double holdVoltage = positionController.calculate(
