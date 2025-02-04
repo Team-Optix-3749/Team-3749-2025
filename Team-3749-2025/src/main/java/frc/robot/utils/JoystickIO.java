@@ -108,6 +108,17 @@ public class JoystickIO {
         }));
 
         buttonReefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
+        buttonReefZoneB.onTrue(Commands.runOnce(() -> System.out.println("B")));
+        buttonReefZoneC.onTrue(Commands.runOnce(() -> System.out.println("C")));
+        buttonReefZoneD.onTrue(Commands.runOnce(() -> System.out.println("D")));
+        buttonReefZoneE.onTrue(Commands.runOnce(() -> System.out.println("E")));
+        buttonReefZoneF.onTrue(Commands.runOnce(() -> System.out.println("F")));
+        buttonReefZoneG.onTrue(Commands.runOnce(() -> System.out.println("G")));
+        buttonReefZoneH.onTrue(Commands.runOnce(() -> System.out.println("H")));
+        buttonReefZoneI.onTrue(Commands.runOnce(() -> System.out.println("I")));
+        buttonReefZoneJ.onTrue(Commands.runOnce(() -> System.out.println("J")));
+        buttonReefZoneK.onTrue(Commands.runOnce(() -> System.out.println("K")));
+        buttonReefZoneL.onTrue(Commands.runOnce(() -> System.out.println("L")));
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
