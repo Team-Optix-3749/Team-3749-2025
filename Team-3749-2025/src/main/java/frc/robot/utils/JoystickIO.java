@@ -107,18 +107,18 @@ public class JoystickIO {
             Robot.swerve.showSetpointEndGoal();
         }));
 
-        buttonReefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
-        buttonReefZoneB.onTrue(Commands.runOnce(() -> System.out.println("B")));
-        buttonReefZoneC.onTrue(Commands.runOnce(() -> System.out.println("C")));
-        buttonReefZoneD.onTrue(Commands.runOnce(() -> System.out.println("D")));
-        buttonReefZoneE.onTrue(Commands.runOnce(() -> System.out.println("E")));
-        buttonReefZoneF.onTrue(Commands.runOnce(() -> System.out.println("F")));
-        buttonReefZoneG.onTrue(Commands.runOnce(() -> System.out.println("G")));
-        buttonReefZoneH.onTrue(Commands.runOnce(() -> System.out.println("H")));
-        buttonReefZoneI.onTrue(Commands.runOnce(() -> System.out.println("I")));
-        buttonReefZoneJ.onTrue(Commands.runOnce(() -> System.out.println("J")));
-        buttonReefZoneK.onTrue(Commands.runOnce(() -> System.out.println("K")));
-        buttonReefZoneL.onTrue(Commands.runOnce(() -> System.out.println("L")));
+        buttonReefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(5)));
+        buttonReefZoneB.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(7)));
+        buttonReefZoneC.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(9)));
+        buttonReefZoneD.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(11)));
+        buttonReefZoneE.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(13)));
+        buttonReefZoneF.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(15)));
+        buttonReefZoneG.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(17)));
+        buttonReefZoneH.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(19)));
+        buttonReefZoneI.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(21)));
+        buttonReefZoneJ.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(23)));
+        buttonReefZoneK.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(25)));
+        buttonReefZoneL.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(27)));
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
