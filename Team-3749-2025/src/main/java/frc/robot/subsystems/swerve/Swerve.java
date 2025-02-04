@@ -18,6 +18,7 @@ import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.utils.*;
@@ -125,23 +126,26 @@ public class Swerve extends SubsystemBase {
       this.getName(),
       "setpoint position",
       new Double[] { 0.0, 0.0, 0.0 });
-  private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>(
+
+  private ShuffleData<Double[]> setpointGoalStateLog = new ShuffleData<Double[]>(
+      this.getName(),
+      "setpoint end goal",
+      new Double[] { 0.0, 0.0, 0.0 });
+
+  private ShuffleData<Double[]> setpointVelocityLog = new ShuffleData<Double[]>(
       this.getName(),
       "setpoint velocity",
-      0.0);
-  private ShuffleData<Double> setpointRotationalVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational velocity",
-      0.0);
-  private ShuffleData<Double> setpointAccelerationLog = new ShuffleData<Double>(
+      new Double[] { 0.0, 0.0, 0.0 });
+
+  private ShuffleData<Double[]> setpointAccelerationLog = new ShuffleData<Double[]>(
       this.getName(),
       "setpoint acceleration",
-      0.0);
+      new Double[] { 0.0, 0.0, 0.0 });
 
-  private ShuffleData<Double> setpointRotationalAccelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational acceleration",
-      0.0);
+  public int currentPPSetpointIndex = 0;
+  public int currentPPApproachSetpointIndex = 0;
+
+  public boolean isOTF = false;
 
   public Swerve() {
 
@@ -160,6 +164,7 @@ public class Swerve extends SubsystemBase {
         modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
       }
     }
+
     // pose estimator
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         DriveConstants.driveKinematics,
@@ -181,6 +186,9 @@ public class Swerve extends SubsystemBase {
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
+    logSetpoints(
+        new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   /**
@@ -197,6 +205,18 @@ public class Swerve extends SubsystemBase {
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         DriveConstants.driveKinematics.toChassisSpeeds(states),
         getRotation2d());
+    return speeds;
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getState();
+    }
+    ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+        DriveConstants.driveKinematics.toChassisSpeeds(states),
+        getRotation2d());
+    System.out.println(speeds);
     return speeds;
   }
 
@@ -288,6 +308,18 @@ public class Swerve extends SubsystemBase {
    * @note verticle flipping relies on choreo detecting rotational symetry on the
    *       field
    */
+  public void followSample(Pose2d positions, Pose2d velocities) {
+    logSetpoints(positions, velocities);
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(
+            xController.calculate(getPose().getX(), positions.getX()) + velocities.getX(),
+            yController.calculate(getPose().getY(), positions.getY()) + velocities.getY(),
+            turnController.calculate(getPose().getRotation().getRadians(), positions.getRotation().getRadians())
+                + velocities.getRotation().getRadians()),
+        getPose().getRotation());
+
+    Robot.swerve.setChassisSpeeds(speeds);
+  }
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
 
@@ -336,6 +368,18 @@ public class Swerve extends SubsystemBase {
    */
   public void setUtilizeVision(boolean utilize) {
     utilizeVision = utilize;
+  }
+
+  public void cyclePPSetpoint() {
+    currentPPSetpointIndex++;
+
+    if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
+      currentPPSetpointIndex = 0;
+    }
+  }
+
+  public PPSetpoints getPPSetpoint() {
+    return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
   /**
@@ -444,7 +488,41 @@ public class Swerve extends SubsystemBase {
     setpointAccelerationLog.set(acceleration);
     setpointRotationalAccelerationLog.set(accelerations[2]);
 
+    // from otf branch
+    // Double[] velocities = new Double[] { sample.vx, sample.vy, sample.omega };
+    //
+    // setpointVelocityLog.set(velocities);
+    //
+    // Double[] accelerations = new Double[] { sample.ax, sample.ay, sample.alpha };
+    // 
+    // setpointAccelerationLog.set(accelerations);
+
   }
+
+  public void logSetpoints(Pose2d position, Pose2d velocity) {
+    // setpoint logging for automated driving
+    Double[] positions = new Double[] { position.getX(), position.getY(), position.getRotation().getRadians() };
+    setpointPositionLog.set(positions);
+
+    Double[] velocities = new Double[] { velocity.getX(), velocity.getY(), velocity.getRotation().getRadians() };
+    setpointVelocityLog.set(velocities);
+    setpointAccelerationLog.set(new Double[] { 0.0, 0.0, 0.0 });
+
+  }
+
+  public void showSetpointEndGoal() {
+    setpointGoalStateLog.set(
+        new Double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
+            getPPSetpoint().setpoint.getRotation().getRadians() });
+  }
+
+  public void showApproachSetpointEndGoal() {
+    setpointGoalStateLog.set(
+        new Double[] { getPPSetpoint().approachPoint.getX(), getPPSetpoint().approachPoint.getY(),
+            getPPSetpoint().approachPoint.getRotation().getRadians() });
+  }
+
+
 
   /**
    * log all serve data
@@ -501,6 +579,9 @@ public class Swerve extends SubsystemBase {
     accelerationLog.set((robotVelocity - velocityLog.get()) / .02);
     velocityLog.set(robotVelocity);
     currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+
+    // SmartDashboard.putData("Swerve Pose",getPose()); also i got opped on for
+    // codign this in csa rip
   }
 
   @Override

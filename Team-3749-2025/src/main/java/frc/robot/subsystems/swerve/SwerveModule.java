@@ -53,16 +53,19 @@ public class SwerveModule {
         turningPidController = new PIDController(ModuleConstants.kPturning, 0, ModuleConstants.kDTurning);
         turningPidController.enableContinuousInput(0, 2 * Math.PI);
 
+        String[] moduleNameIDMap = {"FL module","FR module","BL module","BR module"};
+        name = moduleNameIDMap[index];
+        // if (index == 0) {
+        //     name = "FL module";
+        // } else if (index == 1) {
+        //     name = "FR module";
+        // } else if (index == 2) {
+        //     name = "BL module";
+        // } else if (index == 3) {
+        //     name = "BR module";
+        // } i am only doing this because iam bored
 
-        if (index == 0) {
-            name = "FL module";
-        } else if (index == 1) {
-            name = "FR module";
-        } else if (index == 2) {
-            name = "BL module";
-        } else if (index == 3) {
-            name = "BR module";
-        }
+       
         // Tab, name, data
         driveSpeed = new ShuffleData<>("Swerve/" + name, "drive speed",
                 moduleData.driveVelocityMPerSec);

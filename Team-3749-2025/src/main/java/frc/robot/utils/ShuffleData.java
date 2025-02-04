@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableType;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -45,18 +44,33 @@ public class ShuffleData<T> {
     public T get() {
         NetworkTableValue value = entry.get();
 
-        if (value.getType() == NetworkTableType.kBoolean) {
+        switch(value.getType())
+        {
+            case kBoolean:
             return (T) (Boolean) value.getBoolean();
 
-        } else if (value.getType() == NetworkTableType.kDouble) {
+            case kDouble:
             return (T) (Double) value.getDouble();
-
-        } else if (value.getType() == NetworkTableType.kString) {
+            
+            case kString:
             return (T) (String) value.getString();
 
-        } else {
+            default:
             return this.defaultVal;
         }
+
+        // if (value.getType() == NetworkTableType.kBoolean) {
+        //     return (T) (Boolean) value.getBoolean();
+
+        // } else if (value.getType() == NetworkTableType.kDouble) {
+        //     return (T) (Double) value.getDouble();
+
+        // } else if (value.getType() == NetworkTableType.kString) {
+        //     return (T) (String) value.getString();
+
+        // } else {
+        //     return this.defaultVal;
+        // }
     }
 
     /**

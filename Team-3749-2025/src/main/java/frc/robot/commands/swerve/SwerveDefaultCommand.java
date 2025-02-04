@@ -46,11 +46,9 @@ public class SwerveDefaultCommand extends Command {
     // one combined magnitutde
     double linearMagnitude = Math.hypot(xMagnitude, yMagnitude);
     // to make a 0,0 rotation 2d not throw an error
-    if (xMagnitude==0 && yMagnitude==0){
-      yMagnitude=0.0001;
-    }
+
     // one combined direction
-    Rotation2d linearDirection = new Rotation2d(xMagnitude, yMagnitude);
+    Rotation2d linearDirection = UtilityFunctions.safeRotation(xMagnitude, yMagnitude);
 
     // deadbands
     // is always postive
@@ -64,6 +62,14 @@ public class SwerveDefaultCommand extends Command {
     linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
     turningMagnitude = Math.copySign(turningMagnitude * turningMagnitude, turningMagnitude);
 
+    if (Robot.swerve.isOTF) {
+      if ((Math.abs(linearMagnitude) > 0.2 || Math.abs(turningMagnitude) > 0.2)) {
+        Robot.swerve.isOTF = false;
+      } else {
+        return;
+      }
+    }
+
     double driveSpeedMPS = linearMagnitude * Robot.swerve.getMaxDriveSpeed();
     double turningSpeedRadPerSecond = turningMagnitude * Robot.swerve.getMaxAngularSpeed();
 
@@ -72,12 +78,6 @@ public class SwerveDefaultCommand extends Command {
     double ySpeed = driveSpeedMPS * Math.sin(linearDirection.getRadians());
     ChassisSpeeds chassisSpeeds;
 
-    // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-    //     UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
-    //     UtilityFunctions.isRedAlliance() ? xSpeed : -xSpeed,
-    //     turningSpeedRadPerSecond,
-    //     Robot.swerve.getRotation2d());
-
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
         UtilityFunctions.isRedAlliance() ? xSpeed : -xSpeed,
@@ -85,6 +85,7 @@ public class SwerveDefaultCommand extends Command {
         Robot.swerve.getRotation2d());
 
     // set chassis speeds
+
     Robot.swerve.setChassisSpeeds(chassisSpeeds);
   }
 
