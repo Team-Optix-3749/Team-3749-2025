@@ -24,7 +24,7 @@ public class AlgaeRoller extends Roller {
     }
 
     @Override
-    public void intake() {
+    public void run() {
         setVelocity(RollerConstants.Algae.velocity);
     }
 

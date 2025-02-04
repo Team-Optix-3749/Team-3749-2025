@@ -60,7 +60,7 @@ public class CoralRoller extends Roller {
     }
 
     @Override
-    public void intake() {
+    public void run() {
         setVelocity(RollerConstants.Coral.velocity);
     }
 

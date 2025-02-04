@@ -29,7 +29,7 @@ import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
-import frc.robot.subsystems.roller.implementations.ChuteRoller;
+import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.utils.ShuffleData;
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
   public static Swerve swerve = new Swerve();
   public static AlgaeRoller algaeRoller = new AlgaeRoller();
   public static CoralRoller coralRoller = new CoralRoller();
-  public static ChuteRoller chuteRoller = new ChuteRoller();
+  public static ScoringRoller scoringRoller = new ScoringRoller();
 
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   public static Subsystem[] getAllSuperStructureSubsystems() {
-    return new Subsystem[] {algaeRoller, coralRoller, chuteRoller, elevator, algaeArm, coralArm, climbArm};
+    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, algaeArm, coralArm, climbArm};
   }
 
   @Override

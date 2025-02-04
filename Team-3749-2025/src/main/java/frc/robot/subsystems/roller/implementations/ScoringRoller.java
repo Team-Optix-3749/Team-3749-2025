@@ -13,13 +13,13 @@ import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 
-public class ChuteRoller extends Roller {
+public class ScoringRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
     private boolean hasPiece = true;
 
-    public ChuteRoller() {
+    public ScoringRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
         this.rollerData = new RollerData();
         if (Robot.isSimulation()) {
@@ -46,7 +46,7 @@ public class ChuteRoller extends Roller {
     }
 
     @Override
-    public void intake() {
+    public void run() {
         if (!rollerData.sensorTripped) {
             setVelocity(RollerConstants.Scoring.velocity);
         } else {

@@ -24,7 +24,7 @@ public class Handoff extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        Robot.chuteRoller.setState(RollerConstants.RollerStates.INTAKE);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
     }
 
     @Override
@@ -39,13 +39,13 @@ public class Handoff extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-        Robot.chuteRoller.setState(RollerStates.MAINTAIN);
+        Robot.scoringRoller.setState(RollerStates.MAINTAIN);
         System.out.println("end");
     }
 
     @Override
     public boolean isFinished() {
-        System.out.println("handoff hasPiece: " + Robot.chuteRoller.hasPiece());
-        return Robot.chuteRoller.hasPiece();
+        System.out.println("handoff hasPiece: " + Robot.scoringRoller.hasPiece());
+        return Robot.scoringRoller.hasPiece();
     }
 }
