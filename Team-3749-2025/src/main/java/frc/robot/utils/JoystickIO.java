@@ -107,7 +107,7 @@ public class JoystickIO {
             Robot.swerve.showSetpointEndGoal();
         }));
 
-        buttonReefZoneA.onTrue(Commands.runOnce(() -> System.out.println("WHAT!")));
+        buttonReefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());

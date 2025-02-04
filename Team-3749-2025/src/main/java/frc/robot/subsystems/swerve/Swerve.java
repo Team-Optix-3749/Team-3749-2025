@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
+import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
@@ -350,6 +351,12 @@ public class Swerve extends SubsystemBase {
 
   public PPSetpoints getPPSetpoint() {
     return PPSetpoints.values()[currentPPSetpointIndex];
+  }
+
+  public void startOnTheFly(int setpointIndex)
+  {
+    currentPPApproachSetpointIndex = setpointIndex;
+    isOTF = true;
   }
 
   /**
