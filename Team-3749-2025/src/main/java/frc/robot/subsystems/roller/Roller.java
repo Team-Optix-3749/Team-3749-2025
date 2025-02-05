@@ -71,6 +71,11 @@ public abstract class Roller extends SubsystemBase {
 
         setVoltage(voltage);
     }
+    
+    // will add functionality later
+    public boolean isAlgaeRemoved() {
+        return false;
+    }
 
     public RollerStates getState() {
         return rollerState;
@@ -94,6 +99,9 @@ public abstract class Roller extends SubsystemBase {
             case STOP:
                 stop();
                 break;
+            case SCORE:
+                score();
+                break;
         }
     }
 
@@ -111,6 +119,8 @@ public abstract class Roller extends SubsystemBase {
         rollerIO.setVoltage(0.0);
     }
 
+    public abstract void score();
+    
     @Override
     public void periodic() {
         rollerIO.updateData(rollerData);

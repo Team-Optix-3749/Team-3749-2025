@@ -7,7 +7,6 @@ import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 
 public class AlgaeRoller extends Roller {
-
     public AlgaeRoller() {
         super(Implementations.ALGAE, velocityController(), FF(), positionController()); 
     }
@@ -28,5 +27,9 @@ public class AlgaeRoller extends Roller {
     public void run() {
         setVelocity(RollerConstants.Algae.velocity);
     }
-    
+
+    // does not score
+    @Override
+    public void score() {
+    }
 }
