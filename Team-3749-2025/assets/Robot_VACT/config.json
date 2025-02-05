@@ -1,0 +1,88 @@
+{
+    "comments": [
+        {
+            "model": "drive train",
+            "model_0": "elevator inner stage",
+            "model_1": "elevator carriage + trough",
+            "model_2" : "coral arm"
+        }
+    ],
+    "name": "VACT",
+    "rotations": [
+        {
+            "axis": "x",
+            "degrees": 90
+        },
+        {
+            "axis": "z",
+            "degrees": 180
+        }
+    ],
+    "position": [
+        -0.0635,
+        0.0254,
+        0
+    ],
+    "cameras": [],
+    "components": [
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "y",
+                    "degrees": 0
+                },
+                {
+                    "axis": "z",
+                    "degrees": 180
+                }
+            ],
+            "zeroedPosition": [
+                -0.052,0.02,-0.6
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "y",
+                    "degrees": 0
+                },
+                {
+                    "axis": "z",
+                    "degrees": 180
+                }
+            ],
+            "zeroedPosition": [
+                -0.052,0.02,-0.6
+            ]
+        },
+        {
+            "zeroedRotations": [
+                {
+                    "axis": "x",
+                    "degrees": 270
+                },
+                {
+                    "axis": "y",
+                    "degrees": 90
+                },
+                {
+                    "axis": "z",
+                    "degrees": 0
+                }
+            ],
+            "zeroedPosition": [
+                0.4,
+                0,
+                -0.34
+            ]
+        }
+    ]
+}

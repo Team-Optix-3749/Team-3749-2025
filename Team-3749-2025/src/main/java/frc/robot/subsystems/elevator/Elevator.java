@@ -43,9 +43,11 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
+    private ShuffleData<String> currentStateLog = new ShuffleData<String>("Elevator", "elevator states", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
+    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
+            0.0);
 
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
@@ -99,14 +101,26 @@ public class Elevator extends SubsystemBase {
                 return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.StateHeights.l2Height);
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l2Height,
+                        data.positionMeters);
             case L3:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.StateHeights.l3Height);
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l3Height,
+                        data.positionMeters);
             case L4:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.StateHeights.l4Height);
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l4Height,
+                        data.positionMeters);
+            case SOURCE:
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.sourceHeight,
+                        data.positionMeters);
+            case ALGAE_LOW:
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.algaeLowHeight,
+                        data.positionMeters);
+            case ALGAE_HIGH:
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.algaeHighHeight,
+                        data.positionMeters);
+            case STOW:
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.stowHeight,
+                        data.positionMeters);
             default:
                 return false;
         }
@@ -134,10 +148,21 @@ public class Elevator extends SubsystemBase {
             case L4:
                 setGoal(ElevatorConstants.StateHeights.l4Height);
                 break;
+            case SOURCE:
+                setGoal(ElevatorConstants.StateHeights.sourceHeight);
+                break;
+            case ALGAE_LOW:
+                setGoal(ElevatorConstants.StateHeights.algaeLowHeight);
+                break;
+            case ALGAE_HIGH:
+                setGoal(ElevatorConstants.StateHeights.algaeHighHeight);
+                break;
             case MAX:
                 setGoal(6);
                 break;
             case STOW:
+                setGoal(ElevatorConstants.StateHeights.stowHeight);
+                break;
             default:
                 setGoal(0);
                 break;
@@ -174,11 +199,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stop() {
-        elevatorio.setVoltage(0);
+        elevatorio.setVoltage(ElevatorConstants.ElevatorControl.kGSim);
     }
 
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+        currentStateLog.set(getState().name());
         positionMetersLog.set(data.positionMeters);
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
         accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
@@ -198,7 +224,6 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())

@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.swerve;
 
-import choreo.util.ChoreoAllianceFlipUtil.Flipper;
+import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -55,71 +55,11 @@ public class Swerve extends SubsystemBase {
   // equivilant to a odometer, but also intakes vision
 
   // Logging
-  private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
 
   private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
       this.getName(),
       "odometry",
       new Double[] { 0.0, 0.0, 0.0 });
-
-  private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "real states",
-      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-
-  private ShuffleData<Double[]> desiredStatesLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "desired states",
-      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-
-  private ShuffleData<Double> velocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "velocity",
-      0.0);
-  private ShuffleData<Double> accelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "acceleration",
-      0.0);
-
-  private ShuffleData<Double> yawLog = new ShuffleData<Double>(
-      this.getName(),
-      "yaw",
-      0.0);
-
-  private ShuffleData<Double> pitchLog = new ShuffleData<Double>(
-      this.getName(),
-      "pitch",
-      0.0);
-
-  private ShuffleData<Double> rollLog = new ShuffleData<Double>(
-      this.getName(),
-      "roll",
-      0.0);
-
-  private ShuffleData<Double> rotationalVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "rotational velocity",
-      0.0);
-
-  private ShuffleData<Boolean> gyroConnectedLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro connected",
-
-      false);
-  private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro calibrating",
-      false);
-
-  private ShuffleData<Double> headingLog = new ShuffleData<Double>(
-      this.getName(),
-      "heading",
-      0.0);
-
-  private ShuffleData<Boolean> utilizeVisionLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "utilize vision",
-      true);
 
   private ShuffleData<Double[]> setpointPositionLog = new ShuffleData<Double[]>(
       this.getName(),
@@ -291,15 +231,13 @@ public class Swerve extends SubsystemBase {
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
 
-    Flipper flipper = AutoUtils.flipper;
-
     // ternaries are for x-axis flipping
 
     double xPos = sample.x;
 
     double xVel = sample.vx;
     double xAcc = sample.ax;
-    double yPos = isFlipped ? flipper.flipY(sample.y) : sample.y;
+    double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
 
     double yVel = isFlipped ? -sample.vy : sample.vy;
     double yAcc = isFlipped ? -sample.ay : sample.ay;
@@ -451,31 +389,31 @@ public class Swerve extends SubsystemBase {
    */
   private void logData() {
     // logging of our module states
-    Double[] realStates = {
-        modules[0].getState().angle.getRadians(),
-        modules[0].getState().speedMetersPerSecond,
-        modules[1].getState().angle.getRadians(),
-        modules[1].getState().speedMetersPerSecond,
-        modules[2].getState().angle.getRadians(),
-        modules[2].getState().speedMetersPerSecond,
-        modules[3].getState().angle.getRadians(),
-        modules[3].getState().speedMetersPerSecond
-    };
+    // Double[] realStates = {
+    //     modules[0].getState().angle.getRadians(),
+    //     modules[0].getState().speedMetersPerSecond,
+    //     modules[1].getState().angle.getRadians(),
+    //     modules[1].getState().speedMetersPerSecond,
+    //     modules[2].getState().angle.getRadians(),
+    //     modules[2].getState().speedMetersPerSecond,
+    //     modules[3].getState().angle.getRadians(),
+    //     modules[3].getState().speedMetersPerSecond
+    // };
 
-    // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
-    Double[] desiredStates = {
-        modules[0].getDesiredState().angle.getRadians(),
-        modules[0].getDesiredState().speedMetersPerSecond,
-        modules[1].getDesiredState().angle.getRadians(),
-        modules[1].getDesiredState().speedMetersPerSecond,
-        modules[2].getDesiredState().angle.getRadians(),
-        modules[2].getDesiredState().speedMetersPerSecond,
-        modules[3].getDesiredState().angle.getRadians(),
-        modules[3].getDesiredState().speedMetersPerSecond
-    };
+    // // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
+    // Double[] desiredStates = {
+    //     modules[0].getDesiredState().angle.getRadians(),
+    //     modules[0].getDesiredState().speedMetersPerSecond,
+    //     modules[1].getDesiredState().angle.getRadians(),
+    //     modules[1].getDesiredState().speedMetersPerSecond,
+    //     modules[2].getDesiredState().angle.getRadians(),
+    //     modules[2].getDesiredState().speedMetersPerSecond,
+    //     modules[3].getDesiredState().angle.getRadians(),
+    //     modules[3].getDesiredState().speedMetersPerSecond
+    // };
 
-    realStatesLog.set(realStates);
-    desiredStatesLog.set(desiredStates);
+    // realStatesLog.set(realStates);
+    // desiredStatesLog.set(desiredStates);
 
     // odometry logging
     odometryLog.set(
@@ -484,23 +422,23 @@ public class Swerve extends SubsystemBase {
             getPose().getY(),
             getPose().getRotation().getRadians()
         });
-    utilizeVisionLog.set(utilizeVision);
+    // utilizeVisionLog.set(utilizeVision);
 
-    // gyro logging
-    rotationalVelocityLog.set((gyroData.yawDeg - yawLog.get()) / 0.02);
-    yawLog.set(gyroData.yawDeg);
-    pitchLog.set(gyroData.pitchDeg);
-    rollLog.set(gyroData.rollDeg);
-    gyroConnectedLog.set(gyroData.isConnected);
-    gyroCalibratingLog.set(gyroData.isCalibrating);
-    headingLog.set(getRotation2d().getDegrees());
+    // // gyro logging
+    // rotationalVelocityLog.set((gyroData.yawDeg - yawLog.get()) / 0.02);
+    // yawLog.set(gyroData.yawDeg);
+    // pitchLog.set(gyroData.pitchDeg);
+    // rollLog.set(gyroData.rollDeg);
+    // gyroConnectedLog.set(gyroData.isConnected);
+    // gyroCalibratingLog.set(gyroData.isCalibrating);
+    // headingLog.set(getRotation2d().getDegrees());
 
-    // velocity and acceleration logging
-    double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
-        getChassisSpeeds().vyMetersPerSecond);
-    accelerationLog.set((robotVelocity - velocityLog.get()) / .02);
-    velocityLog.set(robotVelocity);
-    currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+    // // velocity and acceleration logging
+    // double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
+    //     getChassisSpeeds().vyMetersPerSecond);
+    // accelerationLog.set((robotVelocity - velocityLog.get()) / .02);
+    // velocityLog.set(robotVelocity);
+    // currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
   }
 
   @Override

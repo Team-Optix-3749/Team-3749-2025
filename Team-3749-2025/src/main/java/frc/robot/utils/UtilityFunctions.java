@@ -1,7 +1,10 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Robot;
 
 /**
  * Methods that are helpful throughout the code base
@@ -53,6 +56,16 @@ public class UtilityFunctions {
      */
     public static boolean isStopped(double velocity, double minSpeed) {
         return withinMargin(minSpeed, velocity, 0);
+    }
+
+    // This is a custom trigger for AutoUtils
+    public static Trigger CheckPose(Pose2d targetPose, double toleranceMeters, double toleranceRadians) {
+        return new Trigger(() -> {
+            Pose2d currentPose = Robot.swerve.getPose();
+            double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
+            double rotationDifference = Math.abs(currentPose.getRotation().getRadians() - targetPose.getRotation().getRadians());
+            return distance < toleranceMeters && rotationDifference < toleranceRadians;
+        });
     }
 
 }
