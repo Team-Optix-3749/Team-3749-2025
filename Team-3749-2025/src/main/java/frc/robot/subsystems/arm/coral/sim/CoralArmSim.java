@@ -1,8 +1,11 @@
-package frc.robot.subsystems.arm.climb;
+package frc.robot.subsystems.arm.coral.sim;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.subsystems.arm.coral.CoralArmIO;
+import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -10,13 +13,12 @@ import frc.robot.utils.MiscConstants.SimConstants;
  *
  * @author Weston Gardner
  */
-public class ClimbArmSim implements ClimbArmIO {
+public class CoralArmSim implements CoralArmIO {
 
 	private SingleJointedArmSim armSim;
 
 	/**
-	 * creates a new arm simulation motor form the single jointed arm class
-	 * 
+	 * creates a new io implementation of a single jointed arm in simulation
 	 * @param numMotors
 	 * @param gearing
 	 * @param momentOfInertia
@@ -26,19 +28,19 @@ public class ClimbArmSim implements ClimbArmIO {
 	 * @param simulateGravity
 	 * @param startingAngle_Degrees
 	 */
-	public ClimbArmSim() {
+	public CoralArmSim() {
 
 		System.out.println("[Init] Creating ArmSim");
 
 		armSim = new SingleJointedArmSim(
-				DCMotor.getNEO(ClimbConstants.numMotors),
-				ClimbConstants.armGearing,
-				ClimbConstants.momentOfInertia,
-				ClimbConstants.armLength_meters,
-				ClimbConstants.armMinAngle_degrees * Math.PI / 180,
-				ClimbConstants.armMaxAngle_degrees * Math.PI / 180,
-				ClimbConstants.simulateGravity,
-				ClimbConstants.armStartingAngle_degrees * Math.PI / 180);
+				DCMotor.getNEO(CoralConstants.numMotors),
+				CoralConstants.armGearing,
+				CoralConstants.momentOfInertia,
+				CoralConstants.armLength_meters,
+				CoralConstants.armMinAngle_degrees * Math.PI / 180,
+				CoralConstants.armMaxAngle_degrees * Math.PI / 180,
+				CoralConstants.simulateGravity,
+				CoralConstants.armStartingAngle_degrees * Math.PI / 180);
 	}
 
 	private double inputVolts = 0;
@@ -60,14 +62,11 @@ public class ClimbArmSim implements ClimbArmIO {
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
 		data.inputVolts = inputVolts;
-		data.frontMotorAppliedVolts = inputVolts;
-		data.backMotorAppliedVolts = inputVolts;
-		data.frontMotorCurrentAmps = armSim.getCurrentDrawAmps();
-		data.backMotorCurrentAmps = data.frontMotorCurrentAmps;
+		data.motorAppliedVolts = inputVolts;
+		data.motorCurrentAmps = armSim.getCurrentDrawAmps();
 
 		// Sim has no temp
-		data.frontMotorTempCelcius = 0;
-		data.backMotorTempCelcius = 0;
+		data.motorTempCelcius = 0;
 	}
 
 	/**

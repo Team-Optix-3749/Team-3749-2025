@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm.coral;
+package frc.robot.subsystems.arm.coral.real;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -9,6 +9,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.coral.CoralArmIO;
+import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**

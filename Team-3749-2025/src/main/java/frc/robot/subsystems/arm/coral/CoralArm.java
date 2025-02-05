@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
+import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
+import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 

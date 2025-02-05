@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
+import frc.robot.subsystems.arm.climb.real.ClimbArmSparkMax;
+import frc.robot.subsystems.arm.climb.sim.ClimbArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
