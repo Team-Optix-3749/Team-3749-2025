@@ -42,7 +42,7 @@ public class ClimbArm extends Arm {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
 
-    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 
     public ClimbArm() {

@@ -45,7 +45,7 @@ public class CoralArm extends Arm {
     // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll,
     // pitch, yaw));
 
-    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
 
     /**

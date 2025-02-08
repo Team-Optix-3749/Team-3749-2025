@@ -250,9 +250,9 @@ public class Elevator extends SubsystemBase {
         return transform;
     }
 
-    StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
             .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-    StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
             .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
 
     @Override
