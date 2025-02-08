@@ -8,8 +8,9 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.buttons.JoystickIO;
-import frc.robot.commands.auto.*;
+// import frc.robot.buttons.JoystickIO;
+import frc.robot.commands.auto.AutoUtils;
+import frc.robot.commands.auto.Autos;
 
 public class RobotContainer {
   
@@ -27,12 +28,12 @@ public class RobotContainer {
     RobotController.setBrownoutVoltage(7.0);
 
     // robot setup
-    JoystickIO.getButtonBindings();
+    // JoystickIO.getButtonBindings();
     AutoUtils.initAuto();
     
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getSelectedCommand();
+    return Autos.getPrint();
   }
 }

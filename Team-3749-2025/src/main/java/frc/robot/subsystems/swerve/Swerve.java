@@ -14,13 +14,12 @@ import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
-import frc.robot.buttons.JoystickIO;
-import frc.robot.buttons.ButtonBoard.ScoringLocation;
+// import frc.robot.buttons.JoystickIO;
+// import frc.robot.buttons.ButtonBoard.ScoringLocation;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
-import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.utils.*;
@@ -322,18 +321,6 @@ public class Swerve extends SubsystemBase {
 
   }
 
-  public void showSetpointEndGoal() {
-    setpointGoalStateLog.set(
-        new Double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
-            getPPSetpoint().setpoint.getRotation().getRadians() });
-  }
-
-  public void showApproachSetpointEndGoal() {
-    setpointGoalStateLog.set(
-        new Double[] { getPPSetpoint().approachPoint.getX(), getPPSetpoint().approachPoint.getY(),
-            getPPSetpoint().approachPoint.getRotation().getRadians() });
-  }
-
   /**
    * 
    * @param curPose the current pose of the robot in meters, used for measuring
@@ -408,54 +395,6 @@ public class Swerve extends SubsystemBase {
   public void setUtilizeVision(boolean utilize) {
     utilizeVision = utilize;
   }
-
-  public void cyclePPSetpoint() {
-    currentPPSetpointIndex++;
-    if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
-    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
-    {
-      currentPPSetpointIndex++;
-    }
-    if(JoystickIO.buttonBoard.getScoringLocation()!=ScoringLocation.L1 && 
-    currentPPSetpointIndex>=3&&currentPPSetpointIndex<=25 && currentPPSetpointIndex%2!=0)
-    {
-      currentPPSetpointIndex++;
-    }
-
-    if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
-      currentPPSetpointIndex = 0;
-    }
-  }
-
-  public PPSetpoints getPPSetpoint() {
-    return PPSetpoints.values()[currentPPSetpointIndex];
-  }
-
-  public void startOnTheFly(int setpointIndex) {
-    currentPPSetpointIndex = setpointIndex;
-    if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
-    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
-    {
-      currentPPSetpointIndex++;
-    }
-    if(JoystickIO.buttonBoard.getScoringLocation()!=ScoringLocation.L1 && 
-    currentPPSetpointIndex>=3&&currentPPSetpointIndex<=25 && currentPPSetpointIndex%2!=0)
-    {
-      currentPPSetpointIndex++;
-    }
-    isOTF = true;
-  }
-
-  public void runSetpointReachedCommand() {
-    Command command = PPSetpoints.values()[currentPPSetpointIndex].onReachCommand;
-
-    if (command == null) {
-        System.out.println("Warning: Attempted to schedule a null command, skipping execution.");
-        return; 
-    }
-
-    CommandScheduler.getInstance().schedule(command);
-}
 
   /**
    * Manually sets our odometry position
