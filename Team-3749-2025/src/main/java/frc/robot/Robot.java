@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevator.Elevator;
-
+import frc.robot.subsystems.leds.LEDs;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
 
-
+  public static LEDs leDs = new LEDs(1);
   private RobotContainer m_robotContainer;
 
   @Override

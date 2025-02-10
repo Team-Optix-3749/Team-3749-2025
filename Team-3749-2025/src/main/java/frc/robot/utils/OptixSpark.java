@@ -228,8 +228,7 @@ public class OptixSpark {
     }
 
     public void setInverted(boolean inverted) {
-        encoderConfig.inverted(inverted);
-        motorConfig.apply(encoderConfig);
+        motorConfig.inverted(inverted);
         motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     }
