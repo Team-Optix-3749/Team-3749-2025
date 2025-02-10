@@ -9,7 +9,7 @@ package frc.robot.subsystems.arm.coral;
 public class CoralArmConstants {
 
 	// motor specifications
-	public static final int motorID = 0;
+	public static final int motorID = 16;
 	public static final int numMotors = 1;
 
 	// arm specifications

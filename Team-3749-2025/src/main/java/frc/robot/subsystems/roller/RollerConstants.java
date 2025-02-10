@@ -1,7 +1,7 @@
 package frc.robot.subsystems.roller;
 public class RollerConstants {
     public static final class Algae {
-        public static final int motorId = 1;
+        public static final int motorId = 22;
         public static final boolean inverted = false;
 
         public static final double momentOfInertia = 0.04;
@@ -22,7 +22,7 @@ public class RollerConstants {
         public static final double velocity = 5.0;
     }
     public static final class Coral {
-        public static final int motorId = 18; 
+        public static final int motorId = 15; 
         public static final boolean inverted = false;
 
         public static final double momentOfInertia = 0.04;
