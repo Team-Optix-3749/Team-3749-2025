@@ -16,9 +16,10 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  * @author Lilian Wu
  */
 public abstract class Roller extends SubsystemBase {
+    protected RollerData rollerData;
+    protected RollerStates rollerState;
+    
     private RollerIO rollerIO;
-    private RollerData rollerData;
-    private RollerStates rollerState;
     private SimpleMotorFeedforward rollerFF;
     private double lastKnownPosition = 0.0;
 
