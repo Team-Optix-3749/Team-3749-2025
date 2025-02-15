@@ -43,8 +43,10 @@ public class ToPos {
             throw new IllegalArgumentException("Pose arguments cannot be null!");
         }
 
-        if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || 
-        (approachPoint.equals(finalPose) && !ToPosTriggers.isCoralSupplier.getAsBoolean())) { //coral station approachpoint==finalpose only
+        if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) ||
+                (approachPoint.equals(finalPose) && !ToPosTriggers.isCoralSupplier.getAsBoolean())) { // coral station
+                                                                                                      // approachpoint==finalpose
+                                                                                                      // only
             return null; // Prevents unnecessary movement
         }
 
@@ -59,6 +61,7 @@ public class ToPos {
         removeRedundantWaypoints(waypoints, initialPose, finalPose);
         removeExtraStartVertex(waypoints);
         removeExtraEndVertex(waypoints);
+        removeSideObstacleRotationPoint(waypoints);
 
         // 🚨 New Check: Ensure at least 2 waypoints before creating the path
         if (waypoints.size() < 2) {
@@ -388,6 +391,36 @@ public class ToPos {
         if (endingAlignment < 0) {
 
             waypoints.remove(waypoints.size() - 2);
+        }
+    }
+
+    /**
+     * Removes a side obstacle rotation waypoint if it's unnecessary.
+     * If there are three or more waypoints and the direct line from the first to
+     * the third
+     * does not intersect the obstacle safety margin, it removes the second
+     * waypoint.
+     * This only activates when the robot is outside the safety margin obstacle.
+     *
+     * @param waypoints The list of waypoints to be cleaned.
+     */
+    private void removeSideObstacleRotationPoint(List<Waypoint> waypoints) {
+        // Ensure at least three waypoints exist before checking
+        if (waypoints.size() < 3) {
+            return;
+        }
+
+        Translation2d first = waypoints.get(0).anchor();
+        Translation2d third = waypoints.get(2).anchor();
+
+        // Check if the first waypoint is outside the safety margin obstacle
+        if (!isPathIntersectingObstacle(first, first)) {
+            // Check if the direct path from first to third intersects the safety-margined
+            // obstacle
+            if (!isPathIntersectingObstacle(first, third)) {
+
+                waypoints.remove(1); // Remove the second waypoint if it's unnecessary
+            }
         }
     }
 
