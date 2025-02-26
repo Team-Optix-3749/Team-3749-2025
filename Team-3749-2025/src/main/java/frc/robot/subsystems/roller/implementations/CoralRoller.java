@@ -27,7 +27,7 @@ public class CoralRoller extends Roller {
     private boolean hasPiece = true;
     private PhotoelectricIO photoelectricIO;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
-    private RollerData data = new RollerData();
+    private RollerData rollerData = new RollerData();
     private boolean routineStarted = false;
 
     private ShuffleData<Boolean> hasPieceLog = new ShuffleData<Boolean>(this.getName(), "hasPiece", hasPiece);
@@ -55,21 +55,30 @@ public class CoralRoller extends Roller {
     }
 
     public boolean getIsStableState() {
-        double currentVelocity = data.rollerVelocityRadPerSec;
+        double currentVelocity = rollerData.rollerVelocityRadPerSec;
         double velocityChange = Math.abs(currentVelocity - lastVelocity);
-        double velocityChangeThreshold = 0.05; // placeholder
-        return velocityChange < velocityChangeThreshold;
+        double velocityChangeThreshold = 0.05; 
+
+        switch(Robot.coralRoller.getState()) {
+            case RUN:
+                return velocityChange < velocityChangeThreshold;
+            case SCORE:
+                return velocityChange < velocityChangeThreshold;
+            case MAINTAIN:
+                return false;
+            case STOP:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public boolean hasPiece() {
         if (Robot.isSimulation()) {
             return hasPiece;
         } else {
-            if (!getIsStableState() && super.rollerState == RollerStates.RUN
-                    && Math.abs(data.rollerVelocityRadPerSec) < 0.1) {
-                hasPiece = true;
-            } else {
-                hasPiece = false;
+            if (!getIsStableState()) { 
+                hasPiece = true; 
             }
             return hasPiece;
         }
@@ -99,7 +108,6 @@ public class CoralRoller extends Roller {
     public void periodic() {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
-
         hasPiece = photoelectricData.sensing;
         hasPieceLog.set(hasPiece);
         setInitialStateLog.set(routineStarted);

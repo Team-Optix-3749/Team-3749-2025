@@ -12,7 +12,6 @@ public interface RollerIO {
         public double currentAmps = 0.0;
         public double rollerPositionRad = 0.0;
         public boolean sensorTripped = false;
-
     }
 
     public default void updateData(RollerData data) {
