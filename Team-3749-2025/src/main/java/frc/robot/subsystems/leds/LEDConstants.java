@@ -10,7 +10,9 @@ public class LEDConstants {
         GREEN(0, 255, 0), 
         YELLOW(255, 255, 0), 
         WHITE(255, 255, 255), 
-        NOTHING(0, 0, 0);
+        NOTHING(0, 0, 0),
+        BLINKING(255, 255, 255),  // Use white as default
+        MOVING(255, 255, 255);    // Use white as default
 
         final int R;
         final int G;
@@ -31,3 +33,4 @@ public class LEDConstants {
     }
 
 }
+

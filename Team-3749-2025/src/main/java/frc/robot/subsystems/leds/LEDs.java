@@ -26,6 +26,10 @@ public class LEDs extends SubsystemBase {
     private LEDPattern currentPattern = LEDPattern.WHITE;
     private int hue = 0;
     private double brightness = 1;
+    private int frameCounter = 0; // Keeps track of animation frames
+
+
+    
 
     public LEDs() {
         LED1.setLength(LEDBuffer.getLength());
@@ -113,8 +117,10 @@ public class LEDs extends SubsystemBase {
         if (pattern == LEDPattern.WHITE && RobotController.getBatteryVoltage() < 8) {
             pattern = LEDPattern.RED;
         }
+    
         this.currentPattern = pattern;
     }
+    
 
     /**
      * Returns the current LED pattern
@@ -133,25 +139,36 @@ public class LEDs extends SubsystemBase {
         brightness = setBrightness;
     }
 
-    // runs every 0.02 sec
-    @Override
-    public void periodic() {
 
-        setLEDOneColorRGB(this.currentPattern.R, this.currentPattern.G, this.currentPattern.B);
+@Override
+public void periodic() {
+    frameCounter++;
 
-        // if (!Robot.elevator.getIsStableState() || !Robot.coralArm.getIsStableState()) {
-        //     setLEDPattern(LEDPattern.YELLOW);
-        // } else if (Robot.coralRoller.hasPiece()) {
-        //     setLEDPattern(LEDPattern.BLUE);
-        // } else if (Robot.scoringRoller.hasPiece()) {
-        //     setLEDPattern(LEDPattern.GREEN);
-        // } else {
-        //     led.setLEDPattern(LEDPattern.WHITE);
-        // }
+    if (currentPattern == LEDPattern.BLINKING) {
+        boolean isOn = (frameCounter / 10) % 2 == 0; // Toggle every 10 cycles (~0.2s)
+        int R = isOn ? LEDPattern.BLINKING.R : 0;
+        int G = isOn ? LEDPattern.BLINKING.G : 0;
+        int B = isOn ? LEDPattern.BLINKING.B : 0;
+        setLEDOneColorRGB(R, G, B);
+    } 
+    else if (currentPattern == LEDPattern.MOVING) {
+        int length = LEDBuffer.getLength();
+        int position = (frameCounter / 2) % length; // Moves every 0.04s down the strip
 
-        LED1.setData(LEDBuffer);
-        // LED2.setData(LEDBuffer);
-
+        for (int i = 0; i < length; i++) {
+            if (i == position) {
+                LEDBuffer.setRGB(i, LEDPattern.MOVING.R, LEDPattern.MOVING.G, LEDPattern.MOVING.B);
+            } else {
+                LEDBuffer.setRGB(i, 0, 0, 0); // Turn off other LEDs
+            }
+        }
+    } 
+    else {
+        setLEDOneColorRGB(currentPattern.R, currentPattern.G, currentPattern.B);
     }
+
+    LED1.setData(LEDBuffer);
+}
+
 
 }
