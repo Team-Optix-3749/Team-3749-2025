@@ -370,14 +370,14 @@ public class Swerve extends SubsystemBase {
   public void cyclePPSetpoint() {
     isOTF = false;
     currentPPSetpointIndex++;
-    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
+    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
     }
-    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1 &&
+    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1 &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
       currentPPSetpointIndex++;
     }
-    if (JoystickIO.buttonBoard.getScoringMode() != ScoringMode.L1 &&
+    if (JoystickIO.getButtonBoard().getScoringMode() != ScoringMode.L1 &&
         currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }
@@ -445,16 +445,16 @@ public class Swerve extends SubsystemBase {
     Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
-    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
+    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
     }
 
-    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1 &&
+    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1 &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
       currentPPSetpointIndex++;
     }
 
-    if (JoystickIO.buttonBoard.getScoringMode() != ScoringMode.L1 &&
+    if (JoystickIO.getButtonBoard().getScoringMode() != ScoringMode.L1 &&
         currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }

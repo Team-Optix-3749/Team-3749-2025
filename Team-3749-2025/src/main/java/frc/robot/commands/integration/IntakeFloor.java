@@ -40,7 +40,7 @@ public class IntakeFloor extends Command {
     @Override
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         hasPieceTimeStamp = Double.MAX_VALUE;
     }
 
@@ -49,7 +49,7 @@ public class IntakeFloor extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.3
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.1
                 && this.isScheduled();
     }
 }

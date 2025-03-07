@@ -83,17 +83,17 @@ public class ToPosTriggers {
     // ======= Utility Functions =======
 
     // /**
-    //  * Checks if the robot is within a certain margin of the target setpoint.
-    //  * Used to determine when to execute position-based triggers.
-    //  *
-    //  * @return true if the robot is within the defined distance of the target
-    //  *         setpoint.
-    //  */
-    // private static boolean OTFWithinMargin() {
-    //     return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-    //             Robot.swerve.getPose().getTranslation(),
-    //             Robot.swerve.getPPSetpoint().setpoint.getTranslation());
-    // }
+    // * Checks if the robot is within a certain margin of the target setpoint.
+    // * Used to determine when to execute position-based triggers.
+    // *
+    // * @return true if the robot is within the defined distance of the target
+    // * setpoint.
+    // */
+    private static boolean OTFWithinMargin() {
+        return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+                Robot.swerve.getPose().getTranslation(),
+                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+    }
 
     // ======= Trigger Setup for Automatic Actions =======
 
@@ -102,60 +102,59 @@ public class ToPosTriggers {
      * reaches certain locations.
      */
     public static void createOTFTriggers() {
-        
 
         // ======= Coral Station Trigger =======
         // Activates intake when the robot reaches the coral station.
         Trigger coralStation = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return //OTFWithinMargin() &&  i am aware this is ugly but this might be causing problems
-            isCoralSupplier.getAsBoolean();
+            return OTFWithinMargin() &&
+                    isCoralSupplier.getAsBoolean();
         });
         coralStation.onTrue(new CoralIntakeSource());
 
         // ======= Reef Level 1 Scoring Trigger =======
         // Scores using the Level 1 elevator state when within range.
         Trigger coralReefL1 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return //OTFWithinMargin() &&
+            return OTFWithinMargin() &&
                     isReefL1Supplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1;
+                    JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1;
         });
         coralReefL1.onTrue(new ScoreL1());
 
         // ======= Reef Level 2 Scoring Trigger =======
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return //OTFWithinMargin() &&
+            return OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L2;
+                    JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L2;
         });
         coralReefL2.onTrue(new ScoreL234(ElevatorStates.L2));
 
         // ======= Reef Level 3 Scoring Trigger =======
         Trigger coralReefL3 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return //OTFWithinMargin() &&
+            return OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L3;
+                    JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L3;
         });
         coralReefL3.onTrue(new ScoreL234(ElevatorStates.L3));
 
         // ======= Reef Level 4 Scoring Trigger =======
         Trigger coralReefL4 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return //OTFWithinMargin() &&
+            return OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L4;
+                    JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L4;
         });
         coralReefL4.onTrue(new ScoreL234(ElevatorStates.L4));
 
         // ======= High Algae Knocking Trigger =======
         Trigger highAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return //OTFWithinMargin() && 
-            isHighAlgaeSupplier.getAsBoolean();
+            return OTFWithinMargin() &&
+                    isHighAlgaeSupplier.getAsBoolean();
         });
         highAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
 
         // ======= Low Algae Knocking Trigger =======
         Trigger lowAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return //OTFWithinMargin() && 
-            isLowAlgaeSupplier.getAsBoolean();
+            return OTFWithinMargin() &&
+                    isLowAlgaeSupplier.getAsBoolean();
         });
         lowAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
     }

@@ -407,11 +407,11 @@ public class ToPos {
      */
     public static void setSetpointByClosestReefBranch(boolean isLeftBranch) {
         int branchIndex = isLeftBranch ? 0 : 1; // Selects the left (0) or right (1) branch
-        if(JoystickIO.buttonBoard.getScoringMode()==null)
+        if(JoystickIO.getButtonBoard().getScoringMode()==null)
         {
-            JoystickIO.buttonBoard.setScoringMode(ScoringMode.ALGAE);
+            JoystickIO.getButtonBoard().setScoringMode(ScoringMode.ALGAE);
         }
-        if(JoystickIO.buttonBoard.getScoringMode().equals(ScoringMode.ALGAE))
+        if(JoystickIO.getButtonBoard().getScoringMode().equals(ScoringMode.ALGAE))
         {
             branchIndex = 2;
         }
@@ -421,7 +421,7 @@ public class ToPos {
         Pose2d closestSide = Robot.swerve.getPose().nearest(ToPosConstants.Setpoints.reefSides);
 
         // If scoring at Level 1, adjust the offset accordingly
-        if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1) {
+        if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1) {
             shouldOffsetForL1 = 1;
         }
         //possible race condition if scoring mode somehow changes that fast

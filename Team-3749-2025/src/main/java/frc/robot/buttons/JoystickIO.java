@@ -57,7 +57,7 @@ public class JoystickIO {
         private static final CommandXboxController operator = new CommandXboxController(1);
         private static final OnTheFly onTheFly = new OnTheFly();
 
-        public static ButtonBoard buttonBoard = new ButtonBoard();
+        private static ButtonBoard buttonBoard = new ButtonBoard();
 
         public JoystickIO() {
         }
@@ -65,19 +65,18 @@ public class JoystickIO {
         /**
          * Activates the rumble motor per method call (requires continuous calls)
          */
-        public static void rumblePilot()
-        {
-                pilot.setRumble(RumbleType.kBothRumble, 0.05); //0 to 100% (0 to 1 argument)
+        public static void rumblePilot() {
+                pilot.setRumble(RumbleType.kBothRumble, 0.1); // 0 to 100% (0 to 1 argument)
         }
 
         public static void getButtonBindings() {
 
                 if (Robot.isSimulation()) {
                         // will show not connected if on
-                        testBindings();
+                        pilotAndOperatorBindings();
                         // simBindings();
                 } else {
-                        testBindings();
+                        pilotAndOperatorBindings();
 
                 }
 
@@ -133,34 +132,16 @@ public class JoystickIO {
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
-                // // OTF by controller - Closest apriltag
-                // pilot.x().onTrue(Commands.runOnce(() -> {
-                //         ToPos.setSetpointByClosestReefBranch(true);
-                //         Robot.swerve.setIsOTF(true);
-                // }));
-                // pilot.b().onTrue(Commands.runOnce(() -> {
-                //         ToPos.setSetpointByClosestReefBranch(false);
-                //         Robot.swerve.setIsOTF(true);
-                // }));
-
-                // pilot.povRight().whileTrue(Commands.runOnce(() -> rumblePilot()));
-
-                // pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
-                // pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
-
                 // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
                                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
                 // intake source w arm
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
                 // outtake arm
-
-                pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
                 pilot.leftBumper().onTrue(new ScoreL1());
                 // intake source w elevator
                 pilot.rightBumper().onTrue(new IntakeSource());
                 // handoff
-
                 pilot.a().onTrue(new Handoff());
                 // Climb - Reset to cancel
                 pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
@@ -180,7 +161,6 @@ public class JoystickIO {
                 operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
                 // Reset
                 operator.povDown().onTrue(new Reset());
-                
 
                 // OTF Binding
                 new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
@@ -204,79 +184,26 @@ public class JoystickIO {
         }
 
         public static void testBindings() {
-                // gyro reset
-                pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-                // pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
+                pilotAndOperatorBindings();
 
-                // // OTF by controller - Closest apriltag
-                // pilot.x().onTrue(Commands.runOnce(() -> {
-                // ToPos.setSetpointByClosestReefBranch(true);
-                // Robot.swerve.setIsOTF(true);
-                // }));
-                // pilot.b().onTrue(Commands.runOnce(() -> {
-                // ToPos.setSetpointByClosestReefBranch(false);
-                // Robot.swerve.setIsOTF(true);
-                // }));
+                pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
 
-                pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
-                pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
-                // intake floor
-                pilot.leftTrigger().onTrue(new IntakeFloor());
-                // intake source w arm
-                pilot.rightTrigger().onTrue(new CoralIntakeSource());
-                // outtake arm
-
-                pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
-                pilot.leftBumper().onTrue(new ScoreL1());
-                // intake source w elevator
-                pilot.rightBumper().onTrue(new IntakeSource());
-                // handoff
-
-                pilot.a().onTrue(new Handoff());
-                // Climb - Reset to cancel
-                pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
-                // reset
-                pilot.povDown().onTrue(new Reset());
-                // toggle hasPiece
-                pilot.povUp().onTrue(Commands
-                                .runOnce(() -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.hasPiece())));
+                // OTF by controller - Closest apriltag
+                pilot.x().onTrue(Commands.runOnce(() -> {
+                        ToPos.setSetpointByClosestReefBranch(true);
+                        Robot.swerve.setIsOTF(true);
+                }));
+                pilot.b().onTrue(Commands.runOnce(() -> {
+                        ToPos.setSetpointByClosestReefBranch(false);
+                        Robot.swerve.setIsOTF(true);
+                }));
 
                 pilot.povRight().onTrue(Commands.runOnce(
                                 () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOWED)))
                                 .onFalse(Commands.runOnce(
                                                 () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOPPED)));
 
-                // scoring
-                operator.a().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
-                operator.x().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
-                operator.b().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
-                operator.y().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
-                // Algae
-                operator.leftTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
-                operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
-                // Reset
-                operator.povDown().onTrue(new Reset());
-
-                // OTF Binding
-                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
-
-                // OTF Cancel
-                new Trigger(() -> {
-                        if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
-                                        || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
-                                        || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
-                                return true;
-                        }
-                        return false;
-                }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
-
-                // OTF Triggers
-                ToPosTriggers.createOTFTriggers();
-
-                // Button board
-                bindButtonBoard();
-
-                operator.povLeft().onTrue(Commands.runOnce(()->Robot.swerve.cyclePPSetpoint()));
+                operator.povLeft().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
 
         }
 
@@ -318,4 +245,7 @@ public class JoystickIO {
                                                                 () -> pilot.getRightX()));
         }
 
+        public static ButtonBoard getButtonBoard() {
+                return buttonBoard;
+        }
 }

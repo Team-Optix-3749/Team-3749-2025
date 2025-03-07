@@ -43,7 +43,7 @@ public class Led extends SubsystemBase {
         } else {
             ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
-        ledBase.setData(LEDPattern.kOff);
+        // ledBase.setData(LEDPattern.kOff);
         LedTriggers.createLEDTriggers();
     }
 
@@ -115,87 +115,7 @@ public class Led extends SubsystemBase {
 
     @Override
     public void periodic() {
-        setStripColor();
-        // switch (statusIndicator) {
-        //     case OTF:
-        //         if(Robot.swerve.getIsOTF())
-        //         {
-        //             setLEDColor(LEDColor.RAINBOW);
-        //             return;
-        //         }
-        //         setLEDColor(LEDColor.OFF);
-        //     break;
-        //     case BATTERY:
-        //         if (RobotController.getBatteryVoltage() < 8) {
-        //             setLEDColor(LEDColor.BATTERY_LOW);
-        //             return;
-        //         }
-        //         setLEDColor(LEDColor.BATTERY_GOOD);
-        //         break;
-        //     case PIECE:
-        //         if (Robot.coralRoller.hasPiece()) {
-        //             setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE);
-        //             return;
-        //         }
-        //         if (Robot.scoringRoller.hasPiece()) {
-        //             setLEDColor(LEDColor.CHUTE_HAS_PIECE);
-        //             return;
-        //         }
-        //         setLEDColor(LEDColor.OFF);
-        //         break;
-        //     case COLOR:
-        //         setLEDColor(getCurrentPattern());
-        //         break;
-        //     case TEAM:
-        //         setLEDColor(getTeamColorLED());
-        //         break;
-        //     default:
-        //         setLEDColor(getTeamColorLED());
-        //         break;
-        // }
-        // setStripColor();
 
-
-
-        // this is the way I (weston) would do it, this way it is a bit simpler and we can prioritize certain colors and is easier to manage
-
-            //     switch (statusIndicator) {
-    //         case COLOR:
-    //             setLEDColor(getCurrentPattern());
-    //             break;
-    //         case TEAM:
-    //             setLEDColor(getTeamColorLED());
-    //             break;
-    //         default:
-    //             break;
-    //     }
-
-    //     if (RobotController.getBatteryVoltage() < 8) {
-    //         setLEDColor(LEDColor.BATTERY_LOW);
-    //         return;
-    //     }
-
-    //     else if(Robot.swerve.getIsOTF())
-    //     {
-    //         setLEDColor(LEDColor.RAINBOW);
-    //         return;
-    //     }
-
-    //     else if (Robot.scoringRoller.hasPiece()) {
-    //         setLEDColor(LEDColor.CHUTE_HAS_PIECE);
-    //         return;
-    //     }
-
-    //     else if (Robot.coralRoller.hasPiece()) {
-    //         setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE);
-    //         return;
-    //     }
-
-    //     else {
-    //         setLEDColor(LEDColor.BATTERY_GOOD);
-    //     }
-    //     setStripColor();
-    // }
     }
 
 }
