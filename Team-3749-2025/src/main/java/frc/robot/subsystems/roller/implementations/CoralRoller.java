@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.commands.auto.Autos;
-import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;

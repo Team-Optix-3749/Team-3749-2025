@@ -1,20 +1,17 @@
 package frc.robot.subsystems.leds;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Percent;
 
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.leds.LEDConstants.LEDColor;
-import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import edu.wpi.first.wpilibj.LEDPattern;
 
 import frc.robot.subsystems.leds.real.LedReal;
@@ -23,13 +20,9 @@ import frc.robot.subsystems.leds.sim.LedSim;
 public class Led extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer;
 
-    private LEDColor desiredColor = getTeamColorLED();
+    private LEDColor desiredColor;
     private LEDColor currentColor = null;
-
-    private boolean doRainbow = false;
-
-    private StatusIndicator statusIndicator = StatusIndicator.CORAL_PIECE;
-
+    
     private double brightness = 1;
 
     private LEDIO ledBase;
@@ -42,6 +35,7 @@ public class Led extends SubsystemBase {
         } else {
             ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
+        desiredColor = getTeamColorLED();
         ledBase.setData(LEDPattern.kOff);
         LedTriggers.createLEDTriggers();
     }
@@ -77,28 +71,11 @@ public class Led extends SubsystemBase {
             return LEDColor.NO_TEAM;
         }
 
-        return team.get() == Alliance.Blue ? LEDColor.BLUE_ALLIANCE : LEDColor.RED_ALLIANCE;
+        return team.get() == Alliance.Red ? LEDColor.RED_ALLIANCE : LEDColor.BLUE_ALLIANCE;
     }
 
-    private void setStripColor() {
-        switch (statusIndicator) {
-            case CORAL_PIECE:
-                desiredColor = LEDColor.CORAL_ARM_HAS_PIECE;
-                doRainbow = Robot.coralRoller.hasPiece();
-                break;
-            default:
-                desiredColor = getTeamColorLED();
-                doRainbow = false;
-                break;
-        }
-    }
-
-    public void setLEDColor(LEDColor color) {
+    public void setColor(LEDColor color) {
         this.desiredColor = color;
-    }
-
-    public void setLEDStatusIndicator(StatusIndicator indicator) {
-        statusIndicator = indicator;
     }
 
     /***
@@ -110,14 +87,20 @@ public class Led extends SubsystemBase {
     }
 
     public void updateLEDs() {
-        if (desiredColor == currentColor) {
+
+        if (desiredColor == LEDColor.RAINBOW) {
+            LEDPattern setPattern = LEDConstants.scrollingRainbow;
+            ledBase.setData(setPattern);
+            currentColor = desiredColor;
             return;
         }
 
         LEDPattern setPattern = LEDPattern.solid(desiredColor.color).atBrightness(Percent.of(brightness * 100));
 
-        if(doRainbow) {
-            setPattern = LEDConstants.scrollingRainbow;
+      
+
+        if (desiredColor == LEDColor.RED_ALLIANCE || desiredColor == LEDColor.BLUE_ALLIANCE) {
+            setPattern = LEDPattern.solid(getTeamColorLED().color).atBrightness(Percent.of(brightness * 100));
         }
 
         ledBase.setData(setPattern);
@@ -132,7 +115,6 @@ public class Led extends SubsystemBase {
 
     @Override
     public void periodic() {
-        setStripColor();
         updateLEDs();
         logData();
     }
