@@ -41,7 +41,7 @@ public class LEDConstants {
         OFF(Color.kBlack),
         BATTERY_LOW(Color.kOrange),
         BATTERY_GOOD(Color.kWhite),
-        RAINBOW(Color.kTomato), // this is not the actual color i just need to satisfy reqs
+        RAINBOW(Color.kLimeGreen), // this is not the actual color i just need to satisfy reqs
 
         L1(Color.kPurple),
         L2(Color.kLightBlue),
@@ -54,7 +54,7 @@ public class LEDConstants {
         boolean isRainbow;
 
         LEDColor(Color color) {
-            this.color = color;
+            this.color = Color.kLimeGreen;
         }
     }
 }

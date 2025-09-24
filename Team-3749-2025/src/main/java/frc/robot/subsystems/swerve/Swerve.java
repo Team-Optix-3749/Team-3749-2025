@@ -231,6 +231,8 @@ public class Swerve extends SubsystemBase {
    *                      velocity
    */
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+    
+    chassisSpeeds.times(0.65);
 
     // Convert chassis speeds to individual module states
     SwerveModuleState[] moduleStates = DrivetrainConstants.driveKinematics.toSwerveModuleStates(

@@ -25,7 +25,7 @@ public class ElevatorConstants {
         public static final double baseHeight = Units.feetToMeters(3.25);
 
         public static int[] motorIds = { 19, 20 };
-        public static boolean[] motorInverted = { true, false };
+        public static boolean[] motorInverted = { false, true };
 
         public static int zeroOffset = 0;
     }

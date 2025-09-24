@@ -52,7 +52,7 @@ public class RollerConstants {
 
         public static final class Scoring {
                 public static final int motorId = 21;
-                public static final boolean inverted = false;
+                public static final boolean inverted = true;
 
                 public static final double momentOfInertia = 0.04;
                 public static final double gearRatio = 4;

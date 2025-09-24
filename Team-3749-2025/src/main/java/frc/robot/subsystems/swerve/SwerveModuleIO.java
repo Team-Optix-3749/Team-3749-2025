@@ -17,10 +17,13 @@ public interface SwerveModuleIO {
     public double driveTempCelcius = 0.0;
 
     public double turnPositionRad = 0.0;
+    public double absoluteEncoderPositionRad = 0.0;
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
     public double turnCurrentAmps = 0.0;
     public double turnTempCelcius = 0.0;
+
+    public double desiredVolts = 0.0;
   }
 
   public default void setTurnPosition(double setpointPosition, double feedforward) {

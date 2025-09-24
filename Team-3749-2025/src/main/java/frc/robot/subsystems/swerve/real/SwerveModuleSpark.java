@@ -15,6 +15,8 @@ import frc.robot.utils.MiscConstants.MotorControllerConstants;
 
 public class SwerveModuleSpark implements SwerveModuleIO {
 
+    int idx = 0;
+    double currentVolts = 0;
     private OptixSpark drive;
     private OptixSpark turn;
 
@@ -23,13 +25,9 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     private double absoluteEncoderOffsetRad;
 
     public SwerveModuleSpark(int index) {
-        if (index == 1){
-            drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
+        idx = index;
 
-        } else {
-
-            drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKMAX);
-        }
+        drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKMAX);
 
         drive.setPositionConversionFactor(
                 1 / MotorConstants.driveMotorGearRatio * Math.PI * DrivetrainConstants.wheelDiameterMeters);
@@ -48,18 +46,23 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         turn.setCurrentLimit(MotorControllerConstants.standardStallLimit,
                 MotorControllerConstants.standardFreeLimit);
         turn.setBrakeMode(true);
-        turn.setPositionWrapping(0, 2 * Math.PI);
+        turn.setPositionWrapping(0, 2.0 * Math.PI);
 
         drive.applyConfig();
         turn.applyConfig();
 
         absoluteEncoder = new CANcoder(MotorConstants.absoluteEncoderIds[index]);
         absoluteEncoderOffsetRad = MotorConstants.absoluteEncoderOffsetRad[index];
-        turn.setPosition(absoluteEncoder.getPosition().getValueAsDouble() * 2 * Math.PI - absoluteEncoderOffsetRad);
+        turn.setPosition(
+                absoluteEncoder.getPosition().getValueAsDouble() * 2.0 * Math.PI - absoluteEncoderOffsetRad);
 
         absoluteEncoder.optimizeBusUtilization();
         StatusSignal<Angle> absolutePositionSignal = absoluteEncoder.getAbsolutePosition();
         absolutePositionSignal.setUpdateFrequency(100);
+
+        if (index == 2) {
+            drive.setBrakeMode(false);
+        }
 
     }
 
@@ -73,10 +76,14 @@ public class SwerveModuleSpark implements SwerveModuleIO {
 
         data.turnAppliedVolts = turn.getAppliedVolts();
         data.turnPositionRad = turn.getPosition();
+
+        data.absoluteEncoderPositionRad = absoluteEncoder.getPosition().getValueAsDouble() * 2 * Math.PI
+                - absoluteEncoderOffsetRad;
         data.turnVelocityRadPerSec = turn.getVelocity();
         data.turnCurrentAmps = turn.getCurrent();
         data.turnTempCelcius = turn.getTemperature();
 
+        data.desiredVolts = currentVolts;
     };
 
     @Override
@@ -86,14 +93,21 @@ public class SwerveModuleSpark implements SwerveModuleIO {
 
     @Override
     public void setTurnPosition(double setpointVelocity, double feedforward) {
-        drive.setVelocityControl(setpointVelocity, feedforward);
+        turn.setVelocityControl(setpointVelocity, feedforward);
     }
 
     /** Run the drive motor at the specified voltage. */
     @Override
     public void setDriveVoltage(double volts) {
+
+        if (idx == 2) {
+            return;
+        }
+
         volts = MathUtil.clamp(volts, -12, 12);
         volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
+
+        currentVolts = volts;
 
         // volts = Math.copySign(12, volts);
         drive.setVoltage(volts);
@@ -102,6 +116,7 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     /** Run the turn motor at the specified voltage. */
     @Override
     public void setTurnVoltage(double volts) {
+
         volts = MathUtil.clamp(volts, -12, 12);
         volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
         turn.setVoltage(volts);

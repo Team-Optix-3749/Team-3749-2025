@@ -18,21 +18,21 @@ public class SwerveConstants {
 
         public static final class ControlConstants {
                 public static final double[] turnPID = new double[] {
-                                4.5, 0, 0 };
+                                3, 0, 0 };
                 public static final double[] drivePID = new double[] {
                                 0.27, 0, 0 };
                 // our FF values
                 public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kSDriving",
-                                0.165);
+                                0.26);
                 public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kVDriving",
-                                2.305);
+                                2.765);
                 public static LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kADriving",
                                 0.0);
 
                 public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
-                                4.6);
+                                4.3);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                "swerve/maxAcceleration", 3);
+                                "swerve/maxAcceleration", 3.3);
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = -0.1; // If we can drive a little faster in telop
@@ -69,9 +69,9 @@ public class SwerveConstants {
 
                 public static final boolean[] driveMotorInverted = {
                                 false,
-                                true,
                                 false,
-                                false
+                                true,
+                                true
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,
@@ -86,10 +86,10 @@ public class SwerveConstants {
                                 false
                 };
                 public static final double[] absoluteEncoderOffsetRad = {
-                                5.562 + Math.PI / 2,
-                                1.177,
-                                0.072 - Math.PI / 2,
-                                1.974 - Math.PI / 2
+                                0.868233,
+                                1.239456,
+                                4.790622,
+                                3.518839
                 };
 
         }

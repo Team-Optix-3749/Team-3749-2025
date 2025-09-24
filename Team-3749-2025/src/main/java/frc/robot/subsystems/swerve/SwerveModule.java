@@ -50,7 +50,7 @@ public class SwerveModule {
 
         drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving.get(),
                 ControlConstants.kVDriving.get(), ControlConstants.kADriving.get());
-        turnPID.enableContinuousInput(0, 2 * Math.PI);
+        turnPID.enableContinuousInput(0, 2.0 * Math.PI);
     }
 
     public String getName() {
@@ -126,7 +126,6 @@ public class SwerveModule {
      * @param positionRad - the angle setpoint (0-2pi) for the module
      */
     public void setTurnPosition(double positionRad) {
-
         double PID = turnPID.calculate(moduleData.turnPositionRad, positionRad);
         moduleIO.setTurnVoltage(PID);
     }
@@ -159,11 +158,14 @@ public class SwerveModule {
     public void periodic() {
         moduleIO.updateData(moduleData);
         // // Logging
+
         Logger.recordOutput("Swerve/SwerveModule " + index + "/driveVelocity",
                 moduleData.driveVelocityMPerSec);
         Logger.recordOutput("Swerve/SwerveModule " + index + "/drivePosition", moduleData.drivePositionM);
         Logger.recordOutput("Swerve/SwerveModule " + index + "/driveTemperature",
                 moduleData.driveTempCelcius);
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/desiredVolts",
+                moduleData.desiredVolts);
         Logger.recordOutput("Swerve/SwerveModule " + index + "/driveAppliedVolts",
                 moduleData.driveAppliedVolts);
         Logger.recordOutput("Swerve/SwerveModule " + index + "/driveCurrentAmps",
@@ -178,6 +180,8 @@ public class SwerveModule {
                 moduleData.turnAppliedVolts);
         Logger.recordOutput("Swerve/SwerveModule " + index + "/turnCurrentAmps",
                 moduleData.turnCurrentAmps);
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/absoluteTurnPositionRad",
+                moduleData.absoluteEncoderPositionRad);
         drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving.get(),
                 ControlConstants.kVDriving.get(), ControlConstants.kADriving.get());
 
