@@ -36,6 +36,7 @@ import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
@@ -231,8 +232,6 @@ public class Swerve extends SubsystemBase {
    *                      velocity
    */
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
-    
-    chassisSpeeds.times(0.65);
 
     // Convert chassis speeds to individual module states
     SwerveModuleState[] moduleStates = DrivetrainConstants.driveKinematics.toSwerveModuleStates(
@@ -344,8 +343,8 @@ public class Swerve extends SubsystemBase {
   }
 
   public void setBreakMode(boolean enable) {
-    for (int i = 0; i < 4; i++) {
-      modules[i].setBreakMode(enable);
+    for (SwerveModule module : modules) {
+      module.setBreakMode(enable);
     }
   }
 
@@ -417,24 +416,25 @@ public class Swerve extends SubsystemBase {
   }
 
   // public boolean atChoreoEndpoint(Pose2d endpoint) {
-  //   if (AutoUtils.getIsFlipped()) {
-  //     endpoint = flipPoseVertical(endpoint);
-  //   }
+  // if (AutoUtils.getIsFlipped()) {
+  // endpoint = flipPoseVertical(endpoint);
+  // }
 
-  //   Logger.recordOutput("Swerve/auto/alliance", DriverStation.getAlliance().get());
-  //   Logger.recordOutput("Swerve/auto/endpoint", endpoint);
+  // Logger.recordOutput("Swerve/auto/alliance",
+  // DriverStation.getAlliance().get());
+  // Logger.recordOutput("Swerve/auto/endpoint", endpoint);
 
-  //   SmartDashboard.putBoolean("atEndpoitn", UtilityFunctions.withinMargin(
-  //     new Pose2d(AutoConstants.driveToleranceMeters,
-  //         AutoConstants.driveToleranceMeters,
-  //         new Rotation2d(AutoConstants.turnToleranceRad)),
-  //     getPose(), endpoint));
+  // SmartDashboard.putBoolean("atEndpoitn", UtilityFunctions.withinMargin(
+  // new Pose2d(AutoConstants.driveToleranceMeters,
+  // AutoConstants.driveToleranceMeters,
+  // new Rotation2d(AutoConstants.turnToleranceRad)),
+  // getPose(), endpoint));
 
-  //   return UtilityFunctions.withinMargin(
-  //       new Pose2d(AutoConstants.driveToleranceMeters,
-  //           AutoConstants.driveToleranceMeters,
-  //           new Rotation2d(AutoConstants.turnToleranceRad)),
-  //       getPose(), endpoint);
+  // return UtilityFunctions.withinMargin(
+  // new Pose2d(AutoConstants.driveToleranceMeters,
+  // AutoConstants.driveToleranceMeters,
+  // new Rotation2d(AutoConstants.turnToleranceRad)),
+  // getPose(), endpoint);
 
   // }
 
@@ -444,8 +444,9 @@ public class Swerve extends SubsystemBase {
 
     double yPos = AutoUtils.flipper.flipY(pose.getY());
 
-    double heading = new Rotation2d(Math.PI - pose.getRotation().getRadians()).rotateBy(new Rotation2d(Math.PI)).getRadians();
-    return new Pose2d(xPos,yPos, new Rotation2d(heading));
+    double heading = new Rotation2d(Math.PI - pose.getRotation().getRadians()).rotateBy(new Rotation2d(Math.PI))
+        .getRadians();
+    return new Pose2d(xPos, yPos, new Rotation2d(heading));
 
   }
 
@@ -544,6 +545,11 @@ public class Swerve extends SubsystemBase {
    */
   public void resetGyro() {
     System.out.println("rest gyro");
+
+    for (SwerveModule module : modules) {
+      module.resetEncoderPosition();
+    }
+
     gyro.resetGyro();
     if (UtilityFunctions.isRedAlliance()) {
       swerveDrivePoseEstimator.resetPosition(new Rotation2d(), new SwerveModulePosition[] {
@@ -647,8 +653,20 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
+    double[] absoluteEncoderStates = {
+        modules[0].getModuleData().absoluteEncoderPositionRad,
+        0,
+        modules[1].getModuleData().absoluteEncoderPositionRad,
+        0,
+        modules[2].getModuleData().absoluteEncoderPositionRad,
+        0,
+        modules[3].getModuleData().absoluteEncoderPositionRad,
+        0
+      };
+
     Logger.recordOutput("Swerve/real states", realStates);
     Logger.recordOutput("Swerve/desired states", desiredStates);
+    Logger.recordOutput("Swerve/absolute encoder states", absoluteEncoderStates);
     Logger.recordOutput("Swerve/auto/isOTF", isOTF);
 
     double[] odometry = {

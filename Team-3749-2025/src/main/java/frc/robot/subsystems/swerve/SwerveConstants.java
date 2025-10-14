@@ -35,7 +35,7 @@ public class SwerveConstants {
                                 "swerve/maxAcceleration", 3.3);
 
                 // teleop speed
-                public static final double teleopMaxSpeedReduction = -0.1; // If we can drive a little faster in telop
+                public static final double teleopMaxSpeedReduction = 0.15; // If we can drive a little faster in telop
                 // we may as well
                 public static final double teleopMaxSpeedMetersPerSecond = maxVelocity.get()
                                 * (1 - teleopMaxSpeedReduction);
@@ -68,10 +68,10 @@ public class SwerveConstants {
                 public static final int[] absoluteEncoderIds = { 11, 12, 13, 14 };
 
                 public static final boolean[] driveMotorInverted = {
-                                false,
-                                false,
                                 true,
-                                true
+                                true,
+                                false,
+                                false
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,

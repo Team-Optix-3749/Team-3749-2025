@@ -26,6 +26,9 @@ public interface SwerveModuleIO {
     public double desiredVolts = 0.0;
   }
 
+  public default void syncEncoderPosition() {
+  }
+
   public default void setTurnPosition(double setpointPosition, double feedforward) {
 
   }

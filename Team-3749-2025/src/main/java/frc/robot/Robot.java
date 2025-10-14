@@ -125,18 +125,19 @@ public class Robot extends LoggedRobot {
     for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
       hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
     }
-
   }
 
   @Override
   public void disabledInit() {
 
     vision.setStrategyCam12(PoseStrategy.LOWEST_AMBIGUITY);
+    swerve.setBreakMode(false);
 
   }
 
   @Override
   public void disabledPeriodic() {
+    
   }
 
   @Override

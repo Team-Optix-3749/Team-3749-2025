@@ -145,6 +145,10 @@ public class SwerveModule {
 
     }
 
+    public void resetEncoderPosition() {
+        moduleIO.syncEncoderPosition();
+    }
+
     public void stop() {
         setDriveVoltage(0);
         setTurnVoltage(0);
