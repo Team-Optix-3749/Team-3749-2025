@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.subsystems.leds.LEDConstants.LEDColor;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,12 +27,14 @@ import frc.robot.commands.integration.Climb;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
+import frc.robot.commands.integration.IntakeFloorEnd;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
+import frc.robot.commands.integration.ScoreL234Manual;
 import frc.robot.commands.integration.ScoringModeConditionalHandoff;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
@@ -75,7 +78,7 @@ public class JoystickIO {
                 if (Robot.isSimulation()) {
                         // will show not connected if on
                         // pilotAndOperatorBindings();
-                        simBindings();
+                        pilotAndOperatorBindings();
                 } else {
                         pilotAndOperatorBindings();
                         // testBindings();
@@ -97,14 +100,14 @@ public class JoystickIO {
                 buttonBoard.buttonReefZoneRight2
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(6)));
                 buttonBoard.buttonReefZoneRight3
+                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
+                buttonBoard.buttonReefZoneLeft6
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8)));
                 buttonBoard.buttonReefZoneRight4
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10)));
                 buttonBoard.buttonReefZoneRight5
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12)));
                 buttonBoard.buttonReefZoneRight6
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
-                buttonBoard.buttonReefZoneLeft6
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16)));
                 buttonBoard.buttonReefZoneLeft5
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18)));
@@ -131,72 +134,44 @@ public class JoystickIO {
          * If both controllers are plugged in (pi and op)
          */
         public static void pilotAndOperatorBindings() {
+                pilot.back().whileTrue(Commands.run(Robot.swerve::lockModules, Robot.swerve));
+
                 // gyro reset
-                pilot.povLeft().onTrue(Commands.runOnce(()->Robot.vision.disable3(true)));
-                pilot.povRight().onTrue(Commands.runOnce(()->Robot.vision.disable3(false)));
-
-                pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-
-                // intake floor
-                pilot.leftTrigger().onTrue(new IntakeFloor().andThen(new ScoringModeConditionalHandoff())).onFalse(
-                                Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
-                // // intake source w arm
-
-                // pilot.leftTrigger().onTrue(Commands.runOnce(() ->
-                // Robot.elevator.setVoltage(5)));
-                pilot.rightTrigger().onTrue(new CoralIntakeSource()
-                                .andThen(new ScoringModeConditionalHandoff()))
-                                .onFalse(
-                                                Commands.runOnce(() -> System.out.println("interupt ground intake"),
-                                                                Robot.coralArm));
+                pilot.start().onTrue(Commands.runOnce(Robot.swerve::resetGyro));
                 // outtake arm
                 pilot.leftBumper().onTrue(new ScoreL1());
-                // intake source w elevator
-                pilot.rightBumper().onTrue(new IntakeSource());
-                // handoff
-                pilot.a().onTrue(new Handoff());
-                // Climb - Reset to cancel
-                // pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
-                pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
-                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
-                pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                pilot.x().onTrue(new ScoreL234Manual(ElevatorStates.L2));
+                pilot.b().onTrue(new ScoreL234Manual(ElevatorStates.L3));
+                pilot.y().onTrue(new ScoreL234Manual(ElevatorStates.L4));
+                pilot.povUp().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setState(RollerStates.SCORE)))
+                                .onFalse(Commands.runOnce(() -> Robot.scoringRoller.setState(RollerStates.STOP)));
+                pilot.a().onTrue(new Handoff())
+                                .onFalse(Commands.runOnce(() -> System.out.println("interupt ground intake"),
+                                                Robot.coralRoller, Robot.coralArm));
+
+                operator.x().onTrue(new ScoreL234Manual(ElevatorStates.L2));
+                operator.b().onTrue(new ScoreL234Manual(ElevatorStates.L3));
+                operator.y().onTrue(new ScoreL234Manual(ElevatorStates.L4));
+                operator.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setState(RollerStates.SCORE)))
+                                .onFalse(Commands.runOnce(() -> Robot.scoringRoller.setState(RollerStates.STOP)));
+
+                pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
+                                new IntakeFloorEnd());
+                pilot.rightTrigger().onTrue(new IntakeSource())
+                                .onFalse(Commands.runOnce(() -> System.out.println("interupt ground intake"),
+                                                Robot.coralRoller, Robot.coralArm));
+
+                pilot.povLeft().onTrue(Commands.runOnce(() -> Robot.swerve.goToNearestBranch(true)));
+                pilot.povRight().onTrue(Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)));
 
                 // reset
                 pilot.povDown().onTrue(new Reset());
-                // toggle hasPiece
-                pilot.povUp().onTrue(Commands
-                                .runOnce(() -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.hasPiece())));
 
-                // scoring
-                operator.a().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
-                operator.x().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
-                operator.b().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
-                operator.y().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
                 // Algae
                 operator.leftTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
                 operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
                 // Reset
                 operator.povDown().onTrue(new Reset());
-
-                // OTF Binding
-                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
-
-                // OTF Cancel
-                new Trigger(() -> {
-                        if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
-                                        || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
-                                        || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
-                                return true;
-                        }
-                        return false;
-                }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
-
-                // OTF Triggers
-                ToPosTriggers.createOTFTriggers();
-
-                // Button board
-                bindButtonBoard();
-
         }
 
         public static void testBindings() {
@@ -242,8 +217,10 @@ public class JoystickIO {
 
         public static void simBindings() {
                 // pilotBindings();
-                // pilot.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
-                // pilot.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(true)));
+                // pilot.a().onTrue(Commands.runOnce(() ->
+                // Robot.scoringRoller.setHasPiece(false)));
+                // pilot.b().onTrue(Commands.runOnce(() ->
+                // Robot.scoringRoller.setHasPiece(true)));
 
                 // pilot.x().onTrue(Autos.run3Piece());
 

@@ -25,7 +25,7 @@ public class Handoff extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.HANDOFF);
     }
 
     @Override
@@ -33,8 +33,9 @@ public class Handoff extends Command {
         System.out.println("Handoff");
         if (Robot.coralArm.getIsStableState() && Robot.coralArm.getState() == ArmStates.HAND_OFF) {
             Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
-
+            return;
         }
+        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
     @Override
@@ -45,7 +46,9 @@ public class Handoff extends Command {
     }
 
     /**
-     * Command finishes when scoringRoller has coral and command is being scheduled
+     * Command finishes w
+     * 
+     * hen scoringRoller has coral and command is being scheduled
      */
     @Override
     public boolean isFinished() {

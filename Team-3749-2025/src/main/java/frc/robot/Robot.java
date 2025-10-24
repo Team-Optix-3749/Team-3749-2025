@@ -129,10 +129,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledInit() {
-
-    vision.setStrategyCam12(PoseStrategy.LOWEST_AMBIGUITY);
-    swerve.setBreakMode(false);
-
   }
 
   @Override
@@ -142,7 +138,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledExit() {
-    vision.setStrategyCam12(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
   }
 
   @Override

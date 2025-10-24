@@ -2,6 +2,8 @@
 
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -17,7 +19,8 @@ public interface VisionIO {
                 new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d() };
         public double[] latencyMillis = new double[CameraReal.numCameras];
         public double[] distance = new double[CameraReal.numCameras];
-        public double[] targetsSeen = new double[CameraReal.numCameras];
+        public int[] targetsSeen = new int[CameraReal.numCameras];
+        public ArrayList<Integer> targetsSeenIds = new ArrayList<>();
     }
 
     // public void updateData(VisionData data);

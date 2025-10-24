@@ -35,10 +35,11 @@ public class CoralArmConstants {
 	public static LoggedTunableNumber kV = new LoggedTunableNumber("Arms/CoralArm/kV", 0.8);
 	public static LoggedTunableNumber kA = new LoggedTunableNumber("Arms/CoralArm/kA", 0);
 	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("Arms/CoralArm/max velocity",
-			6);
+			3);
 	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("Arms/CoralArm/max acceleration",
 			12);
 
+			
 
 	public static final double momentOfInertia = 0.775;
 

@@ -64,23 +64,24 @@ public class Photonvision implements VisionIO {
     public PhotonCamera getCamera(int index) {
         return cameraList[index];
     }
+
     @Override
-    public void setDisable3(boolean disable){
+    public void setDisable3(boolean disable) {
         disable3 = disable;
     }
 
     public void updatePose() {
+        visionData.targetsSeenIds.clear();
+
         // Cam # minus 1
         // Cam 3 missing, cam 2 is bad because of mount droop
-        
+
         // cameraUpdatePose(0);
-        // cameraUpdatePose(1);
-        // cameraUpdatePose(2);
+        cameraUpdatePose(1);
+        cameraUpdatePose(2);
         // cameraUpdatePose(3);
         // cameraUpdatePose(4);
         // cameraUpdatePose(5);
-
-
     }
 
     public void cameraUpdatePose(int index) {
@@ -108,6 +109,10 @@ public class Photonvision implements VisionIO {
 
             visionData.latencyMillis[index] = latencyMillis;
             visionData.targetsSeen[index] = pipelineResult.getTargets().size();
+
+            for (var target : pipelineResult.getTargets()) {
+                visionData.targetsSeenIds.add(target.getFiducialId());
+            }
 
             // skip if latency is too high
             if (latencyMillis > VisionConstants.RejectionRequirements.maxLatencyMilliSec) {
@@ -158,9 +163,8 @@ public class Photonvision implements VisionIO {
             // continue;
             // }
 
-           
             // double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
-            double timestamp =  pipelineResult.getTimestampSeconds();
+            double timestamp = pipelineResult.getTimestampSeconds();
             Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
             logTarget(index);
         }

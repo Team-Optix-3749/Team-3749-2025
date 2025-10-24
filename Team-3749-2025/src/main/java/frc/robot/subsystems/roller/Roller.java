@@ -136,7 +136,7 @@ public abstract class Roller extends SubsystemBase {
     public boolean getIsStableState() {
         switch (implementation) {
             case CORAL:
-                return UtilityFunctions.withinMargin(10, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
+                return UtilityFunctions.withinMargin(12, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
             // case ALGAE:
             //     return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
             case SCORING:

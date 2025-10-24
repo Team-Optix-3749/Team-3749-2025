@@ -11,7 +11,7 @@ import frc.robot.subsystems.vision.sim.VisionSim;
 public class Vision extends SubsystemBase {
     @SuppressWarnings("unused")
     private VisionIO visionIO;
-    private VisionData visionData = new VisionData();
+    public VisionData visionData = new VisionData();
 
     public Vision() {
         if (Robot.isReal()) {

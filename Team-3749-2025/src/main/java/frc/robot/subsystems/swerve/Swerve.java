@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.swerve;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
@@ -85,6 +88,17 @@ public class Swerve extends SubsystemBase {
   private int currentPPApproachSetpointIndex = 0;
 
   private boolean isOTF = false; // are we OTF driving rn
+
+  // Reject tags that are too far from the reef faces so we do not drift to
+  // loading stations.
+  private static final double MAX_TAG_TO_REEF_FACE_DISTANCE_METERS = 1.5;
+  private static final List<ReefFace> REEF_FACES = List.of(
+      new ReefFace(PPSetpoints.A, PPSetpoints.B),
+      new ReefFace(PPSetpoints.C, PPSetpoints.D),
+      new ReefFace(PPSetpoints.E, PPSetpoints.F),
+      new ReefFace(PPSetpoints.G, PPSetpoints.H),
+      new ReefFace(PPSetpoints.I, PPSetpoints.J),
+      new ReefFace(PPSetpoints.K, PPSetpoints.L));
 
   public Swerve() {
 
@@ -257,6 +271,14 @@ public class Swerve extends SubsystemBase {
     modules[2].setDesiredState(desiredStates[2]);
     modules[3].setDesiredState(desiredStates[3]);
 
+  }
+
+  public void lockModules() {
+    Rotation2d lockAngle = Rotation2d.fromDegrees(-45);
+    for (SwerveModule module : modules) {
+      module.setDesiredState(new SwerveModuleState(0, lockAngle));
+      lockAngle = lockAngle.plus(Rotation2d.fromDegrees(90));
+    }
   }
 
   /**
@@ -450,6 +472,36 @@ public class Swerve extends SubsystemBase {
 
   }
 
+  public void goToNearestBranch(boolean isLeft) {
+    int desiredSetpointIndex = -1;
+
+    ReefFace face = findClosestReefFace(getPose());
+    
+    desiredSetpointIndex = isLeft ? face.leftIndex : face.rightIndex;
+
+    if (desiredSetpointIndex > 0) {
+      System.out.println("did otf");
+      System.out.println(desiredSetpointIndex);
+      startOnTheFly(desiredSetpointIndex);
+    }
+  }
+
+  private ReefFace findClosestReefFace(Pose2d tagPose) {
+    ReefFace closestFace = null;
+    double smallestDistance = MAX_TAG_TO_REEF_FACE_DISTANCE_METERS;
+    Translation2d tagTranslation = tagPose.getTranslation();
+
+    for (ReefFace face : REEF_FACES) {
+      double distance = tagTranslation.getDistance(face.center);
+      if (distance < smallestDistance) {
+        smallestDistance = distance;
+        closestFace = face;
+      }
+    }
+
+    return closestFace;
+  }
+
   // called when the button board is pressed with the (ppsetpoint)"index" the
   // button is associated w to drive to
 
@@ -458,17 +510,14 @@ public class Swerve extends SubsystemBase {
     Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
-    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
-        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
+    if (currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
     }
 
-    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1 &&
-        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
+    if (currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
       currentPPSetpointIndex++;
     }
 
-    if (JoystickIO.getButtonBoard().getScoringMode() != ScoringMode.L1 &&
-        currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
+    if (currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }
     showOTFEndPoint();
@@ -662,7 +711,7 @@ public class Swerve extends SubsystemBase {
         0,
         modules[3].getModuleData().absoluteEncoderPositionRad,
         0
-      };
+    };
 
     Logger.recordOutput("Swerve/real states", realStates);
     Logger.recordOutput("Swerve/desired states", desiredStates);
@@ -716,6 +765,24 @@ public class Swerve extends SubsystemBase {
 
     logData();
 
+  }
+
+  private static class ReefFace {
+    final int leftIndex;
+    final int rightIndex;
+    final Pose2d leftPose;
+    final Pose2d rightPose;
+    final Translation2d center;
+
+    ReefFace(PPSetpoints leftSetpoint, PPSetpoints rightSetpoint) {
+      leftIndex = leftSetpoint.ordinal();
+      rightIndex = rightSetpoint.ordinal();
+      leftPose = leftSetpoint.setpoint;
+      rightPose = rightSetpoint.setpoint;
+      center = new Translation2d(
+          (leftPose.getX() + rightPose.getX()) * 0.5,
+          (leftPose.getY() + rightPose.getY()) * 0.5);
+    }
   }
 
 }
