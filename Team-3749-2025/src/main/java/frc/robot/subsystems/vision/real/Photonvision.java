@@ -87,7 +87,7 @@ public class Photonvision implements VisionIO {
     public void cameraUpdatePose(int index) {
 
         if (index == 1 || index == 2) {
-            poseEstimatorList[index].addHeadingData(Timer.getFPGATimestamp(), Robot.swerve.getRotation2d());
+            poseEstimatorList[index].addHeadingData(Timer.getTimestamp(), Robot.swerve.getRotation2d());
         }
 
         PhotonCamera camera = cameraList[index];
@@ -184,7 +184,7 @@ public class Photonvision implements VisionIO {
 
     public void logBlank(int index) {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", -1.0);
-        Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", 0.0);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", 1);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", new Pose3d());
     }
 

@@ -163,6 +163,9 @@ public class JoystickIO {
 
                 pilot.povLeft().onTrue(Commands.runOnce(() -> Robot.swerve.goToNearestBranch(true)));
                 pilot.povRight().onTrue(Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)));
+                
+                operator.povLeft().onTrue(Commands.runOnce(() -> Robot.swerve.goToNearestBranch(true)));
+                operator.povRight().onTrue(Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)));
 
                 // reset
                 pilot.povDown().onTrue(new Reset());
@@ -172,6 +175,22 @@ public class JoystickIO {
                 operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
                 // Reset
                 operator.povDown().onTrue(new Reset());
+
+                // OTF Binding
+                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
+
+                // OTF Cancel
+                new Trigger(() -> {
+                        if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
+                                        || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
+                                        || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
+                                return true;
+                        }
+                        return false;
+                }).onTrue(Commands.runOnce(() -> {
+                        System.out.println("otf cancelled");
+                        Robot.swerve.setIsOTF(false);
+                }));
         }
 
         public static void testBindings() {

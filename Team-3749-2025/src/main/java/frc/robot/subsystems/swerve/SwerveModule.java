@@ -145,7 +145,7 @@ public class SwerveModule {
 
     }
 
-    public void resetEncoderPosition() {
+    public void syncEncoderPosition() {
         moduleIO.syncEncoderPosition();
     }
 

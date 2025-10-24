@@ -91,7 +91,7 @@ public class Swerve extends SubsystemBase {
 
   // Reject tags that are too far from the reef faces so we do not drift to
   // loading stations.
-  private static final double MAX_TAG_TO_REEF_FACE_DISTANCE_METERS = 1.5;
+  private static final double MAX_TAG_TO_REEF_FACE_DISTANCE_METERS = 3;
   private static final List<ReefFace> REEF_FACES = List.of(
       new ReefFace(PPSetpoints.A, PPSetpoints.B),
       new ReefFace(PPSetpoints.C, PPSetpoints.D),
@@ -476,8 +476,10 @@ public class Swerve extends SubsystemBase {
     int desiredSetpointIndex = -1;
 
     ReefFace face = findClosestReefFace(getPose());
-    
-    desiredSetpointIndex = isLeft ? face.leftIndex : face.rightIndex;
+
+    if (face != null) {
+      desiredSetpointIndex = isLeft ? face.leftIndex : face.rightIndex;
+    }
 
     if (desiredSetpointIndex > 0) {
       System.out.println("did otf");
@@ -510,16 +512,16 @@ public class Swerve extends SubsystemBase {
     Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
-    if (currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
-    }
+    // if (currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
+    // }
 
-    if (currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
-      currentPPSetpointIndex++;
-    }
+    // if (currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
+    //   currentPPSetpointIndex++;
+    // }
 
-    if (currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
-      currentPPSetpointIndex++;
-    }
+    // if (currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
+    //   currentPPSetpointIndex++;
+    // }
     showOTFEndPoint();
     showOTFApproachPoint();
     isOTF = true;
@@ -596,7 +598,7 @@ public class Swerve extends SubsystemBase {
     System.out.println("rest gyro");
 
     for (SwerveModule module : modules) {
-      module.resetEncoderPosition();
+      module.syncEncoderPosition();
     }
 
     gyro.resetGyro();
