@@ -49,7 +49,7 @@ public class OnTheFly extends Command {
     public void initialize() {
         // System.out.println("epic fail");
 
-        Robot.elevator.setState(ElevatorStates.STOW);
+        // Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;

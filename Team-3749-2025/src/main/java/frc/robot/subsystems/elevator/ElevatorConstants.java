@@ -31,6 +31,10 @@ public class ElevatorConstants {
     }
 
     public static final double stateMarginOfError = 0.1;
+    public static LoggedTunableNumber L1Setpoint = new LoggedTunableNumber("Elevator/Setpoint/L1", Units.inchesToMeters(12));
+    public static LoggedTunableNumber L2Setpoint = new LoggedTunableNumber("Elevator/Setpoint/L2", Units.inchesToMeters(15.35));
+    public static LoggedTunableNumber L3Setpoint = new LoggedTunableNumber("Elevator/Setpoint/L3", 0.742);
+    public static LoggedTunableNumber L4Setpoint = new LoggedTunableNumber("Elevator/Setpoint/L4", 1.3);
 
     public static class ElevatorControl {
         public static LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/kG", 0.32);

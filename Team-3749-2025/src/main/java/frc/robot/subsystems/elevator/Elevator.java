@@ -125,6 +125,20 @@ public class Elevator extends SubsystemBase {
             return;
         }
         setGoal(state.heightMeters);
+        switch (state){
+            case L1:
+                setGoal(ElevatorConstants.L1Setpoint.get());
+                break;
+            case L2:
+                setGoal(ElevatorConstants.L2Setpoint.get());
+                break;
+            case L3:
+                setGoal(ElevatorConstants.L3Setpoint.get());
+                break;
+            case L4:
+                setGoal(ElevatorConstants.L4Setpoint.get());
+                break;
+        }
     }
 
     public void setGoal(double height) {

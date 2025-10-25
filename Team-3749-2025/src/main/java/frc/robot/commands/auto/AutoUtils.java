@@ -131,6 +131,9 @@ public class AutoUtils {
         chooser.addCmd("Two Piece Score L1", () -> Autos.getTwoPieceScoreL1());
         chooser.addCmd("Coral 4 Piece", () -> Autos.getCoralArm4piece());
         chooser.addCmd("Coral 3 Piece", () -> Autos.getCoralArm3piece());
+        chooser.addCmd("Top Score", () -> Autos.getTopScore());
+        chooser.addCmd("Middle Score", () -> Autos.getMiddleScore());
+        chooser.addCmd("Bottom Score", () -> Autos.getBottomScore());
         chooser.select("4-Piece");
 
         SmartDashboard.putData("Auto: Auto Chooser", chooser);

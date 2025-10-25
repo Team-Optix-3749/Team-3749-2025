@@ -116,7 +116,7 @@ public class SwerveModule {
         double setpointAcceleration = (speedMetersPerSecond - previousSetpointVelocity) / 0.02;
         previousSetpointVelocity = speedMetersPerSecond;
 
-        double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
+        double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond);
         double PID = drivePID.calculate(moduleData.driveVelocityMPerSec, speedMetersPerSecond);
         moduleIO.setDriveVoltage(PID + feedforward);
     }
