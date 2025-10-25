@@ -126,14 +126,6 @@ public class SwerveModuleSpark implements SwerveModuleIO {
 
     @Override
     public void syncEncoderPosition() {
-        if (idx == 0) {
-            turn.setPosition(turn.getPosition() - module1Offset.get());
-            return;
-        } else if (idx == 3) {
-            turn.setPosition(turn.getPosition() - module4Offset.get());
-            return;
-        }
-
         turn.setPosition(absoluteEncoder.getPosition().getValueAsDouble() * 2.0 * Math.PI - absoluteEncoderOffsetRad);
     }
 }

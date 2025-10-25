@@ -153,7 +153,7 @@ public class Swerve extends SubsystemBase {
 
   public int getPPSetpointIndex() {
     return currentPPApproachSetpointIndex;
-  }
+  } 
 
   public int getApproachSetpointIndex() {
     return currentPPApproachSetpointIndex;

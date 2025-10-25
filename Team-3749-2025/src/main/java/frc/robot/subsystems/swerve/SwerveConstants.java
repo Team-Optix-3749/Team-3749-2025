@@ -69,9 +69,9 @@ public class SwerveConstants {
 
                 public static final boolean[] driveMotorInverted = {
                                 true,
-                                true,
                                 false,
-                                false
+                                false,
+                                true
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,
@@ -86,10 +86,10 @@ public class SwerveConstants {
                                 false
                 };
                 public static final double[] absoluteEncoderOffsetRad = {
-                                0.868233,
-                                1.239456,
-                                4.790622,
-                                3.518839
+                                0.417,
+                                4.380,
+                                4.791,
+                                0.845
                 };
 
         }
