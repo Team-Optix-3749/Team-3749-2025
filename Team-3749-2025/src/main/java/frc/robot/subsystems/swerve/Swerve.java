@@ -509,7 +509,7 @@ public class Swerve extends SubsystemBase {
 
   public void startOnTheFly(int setpointIndex) {
     setIsOTF(false);
-    Robot.elevator.setState(ElevatorStates.STOW);
+    // Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
     // if (currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {

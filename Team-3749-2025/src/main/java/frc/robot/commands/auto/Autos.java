@@ -131,12 +131,17 @@ public class Autos {
                 Command score2 = AutoUtils.addScoreL4(trajectory3);
                 Command intake2 = AutoUtils.addIntake(trajectory4);
                 AutoUtils.addScoreL4(trajectory5); // third score is the end of the routine, so no need for reference
+                
+                trajectory1.done()
+                                .onTrue(new SequentialCommandGroup(
+                                                Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)),
+                                                new ScoreL234(ElevatorStates.L4)));
 
                 // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-                AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
-                AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
-                AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
-                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
+                AutoUtils.goNextAfterCommand(trajectory4, trajectory5, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), intake2);
+                AutoUtils.goNextAfterCommand(trajectory3, trajectory4, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), score2);
+                AutoUtils.goNextAfterCommand(trajectory2, trajectory3, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), score1);
 
                 // Trigger to update routineStarted when routine ends
                 new Trigger(() -> trajectory5.cmd().isFinished())
@@ -271,27 +276,29 @@ public class Autos {
                 // loop.trajectory, or the new name
                 AutoTrajectory trajectory1 = routine.trajectory("TopScore");
 
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory1, getSelectedCommand());
+
                 trajectory1.done()
                                 .onTrue(new SequentialCommandGroup(
                                                 Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)),
                                                 new ScoreL234(ElevatorStates.L4)));
                 return Commands.print("Top Score")
-                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
-                                .andThen(AutoUtils.startRoutine(routine, "TopScore", trajectory1)));
+                                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
+                                                .andThen(AutoUtils.startRoutine(routine, "TopScore", trajectory1)));
         }
-        
+
         public static Command getMiddleScore() {
                 AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("MiddleScore");
-                
+
                 // loop.trajectory, or the new name
                 AutoTrajectory trajectory1 = routine.trajectory("MiddleScore");
                 trajectory1.done()
-                .onTrue(new SequentialCommandGroup(
-                        Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)),
-                        new ScoreL234(ElevatorStates.L4)));
+                                .onTrue(new SequentialCommandGroup(
+                                                Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)),
+                                                new ScoreL234(ElevatorStates.L4)));
                 return Commands.print("Middle Score")
-                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
-                                .andThen(AutoUtils.startRoutine(routine, "MiddleScore", trajectory1)));
+                                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
+                                                .andThen(AutoUtils.startRoutine(routine, "MiddleScore", trajectory1)));
         }
 
         public static Command getBottomScore() {
@@ -304,8 +311,8 @@ public class Autos {
                                                 Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)),
                                                 new ScoreL234(ElevatorStates.L4)));
                 return Commands.print("Bottom Score")
-                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
-                                .andThen(AutoUtils.startRoutine(routine, "BottomScore", trajectory1)));       
+                                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
+                                                .andThen(AutoUtils.startRoutine(routine, "BottomScore", trajectory1)));
         }
 
         /**

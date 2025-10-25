@@ -395,12 +395,31 @@ public class AutoUtils {
      * 
      * @param curTrajectory
      * @param nextTrajectory
-     * @param Command
+     * @param command
      */
     public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command command) {
         // continue to move with PID to the final position until the command is done
         new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()));
+
+    }
+
+
+    /**
+     * This will begin "nextTrajectory" following the completion of "curTrajectory"
+     * and a command. This should be used to link trajectories together, but only
+     * moving on to the next step in the path if the aciton has been
+     * properly completed
+     * 
+     * @param curTrajectory
+     * @param nextTrajectory
+     * @param autoAlign
+     * @param command
+     */
+    public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory, Command autoAlign,
+            Command command) {
+        // continue to move with PID to the final position until the command is done
+        new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()).andThen(autoAlign));
 
     }
 

@@ -42,8 +42,8 @@ public class MiscConstants {
     public static final ClosedLoopSlot[] slots = new ClosedLoopSlot[] { ClosedLoopSlot.kSlot0, ClosedLoopSlot.kSlot1,
         ClosedLoopSlot.kSlot2, ClosedLoopSlot.kSlot3 };
 
-    public static final int standardStallLimit = 45;
-    public static final int standardFreeLimit = 45;
+    public static final int standardStallLimit = 40;
+    public static final int standardFreeLimit = 40;
 
     public static final int relaxedStallLimit = 15;
     public static final int relaxedFreeLimit = 15;
