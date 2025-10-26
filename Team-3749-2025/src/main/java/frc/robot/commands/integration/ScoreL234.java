@@ -73,6 +73,7 @@ public class ScoreL234 extends Command {
         if (Timer.getFPGATimestamp() - elevTimestamp > 4) {
             Robot.scoringRoller.setState(RollerStates.SCORE);
             scoreTimestamp = Timer.getFPGATimestamp();
+            cancel();
         }
     }
 
@@ -95,7 +96,7 @@ public class ScoreL234 extends Command {
     public boolean isFinished() {
         // return !Robot.scoringRoller.hasPiece() && pieceRecognized && Timer.getFPGATimestamp() - scoreTimestamp > 0.6
         //         && this.isScheduled();
-        return Timer.getFPGATimestamp() - scoreTimestamp > 1 && this.isScheduled();
+        return false;
         // return false;
     }
 

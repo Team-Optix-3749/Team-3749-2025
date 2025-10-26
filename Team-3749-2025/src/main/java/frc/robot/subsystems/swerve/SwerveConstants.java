@@ -32,7 +32,7 @@ public class SwerveConstants {
                 public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
                                 4.3);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                "swerve/maxAcceleration", 3.3*0.6);
+                                "swerve/maxAcceleration", 3.3);
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = 0.15; // If we can drive a little faster in telop

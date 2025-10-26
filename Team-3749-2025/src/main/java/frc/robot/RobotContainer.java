@@ -34,7 +34,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     System.out.println("GET AUTO CMD");
-    return Autos.get3Piece();
+    return Autos.getTopScore();
     // return Autos.getSelectedCommand();
   }
 }

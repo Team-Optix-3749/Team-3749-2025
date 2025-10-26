@@ -4,13 +4,18 @@
 
 package frc.robot.subsystems.swerve;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.util.FlippingUtil;
+import com.pathplanner.lib.util.GeometryUtil;
+
 import choreo.trajectory.SwerveSample;
 import choreo.util.ChoreoAllianceFlipUtil;
+import choreo.util.ChoreoAllianceFlipUtil.Flipper;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -100,6 +105,9 @@ public class Swerve extends SubsystemBase {
       new ReefFace(PPSetpoints.I, PPSetpoints.J),
       new ReefFace(PPSetpoints.K, PPSetpoints.L));
 
+      // private static final ArrayList<ReefFace> REEF_FACES = new ArrayList<>();
+  
+
   public Swerve() {
 
     // if simulation
@@ -148,6 +156,14 @@ public class Swerve extends SubsystemBase {
     resetGyro();
     setOdometry(new Pose2d(3, 3, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
+
+    // for(ReefFace face: REEF_FACES_1) {
+    //   face.leftPose = FlippingUtil.flipFieldPose(face.leftPose);
+    //   face.rightPose = FlippingUtil.flipFieldPose(face.leftPose);
+    //   face.center = FlippingUtil.flipFieldPosition(face.center);
+      
+    //   REEF_FACES.add(face);
+    // }
 
   }
 
@@ -488,10 +504,16 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  private ReefFace findClosestReefFace(Pose2d tagPose) {
+  private ReefFace findClosestReefFace(Pose2d pose) {
     ReefFace closestFace = null;
     double smallestDistance = MAX_TAG_TO_REEF_FACE_DISTANCE_METERS;
-    Translation2d tagTranslation = tagPose.getTranslation();
+    Translation2d tagTranslation = pose.getTranslation();
+
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+
+    if(alliance.isPresent() && alliance.get() == Alliance.Red) {
+      tagTranslation = FlippingUtil.flipFieldPosition(tagTranslation);
+    }
 
     for (ReefFace face : REEF_FACES) {
       double distance = tagTranslation.getDistance(face.center);
@@ -770,11 +792,11 @@ public class Swerve extends SubsystemBase {
   }
 
   private static class ReefFace {
-    final int leftIndex;
-    final int rightIndex;
-    final Pose2d leftPose;
-    final Pose2d rightPose;
-    final Translation2d center;
+    public int leftIndex;
+    public int rightIndex;
+    public Pose2d leftPose;
+    public Pose2d rightPose;
+    public Translation2d center;
 
     ReefFace(PPSetpoints leftSetpoint, PPSetpoints rightSetpoint) {
       leftIndex = leftSetpoint.ordinal();

@@ -138,10 +138,10 @@ public class Autos {
                                                 new ScoreL234(ElevatorStates.L4)));
 
                 // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-                AutoUtils.goNextAfterCommand(trajectory4, trajectory5, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), intake2);
+                AutoUtils.goNextAfterCommand(trajectory4, trajectory5, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(true)), intake2);
                 AutoUtils.goNextAfterCommand(trajectory3, trajectory4, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), score2);
-                AutoUtils.goNextAfterCommand(trajectory2, trajectory3, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), intake1);
-                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(false)), score1);
+                AutoUtils.goNextAfterCommand(trajectory2, trajectory3, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(true)), intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, Commands.runOnce(() -> Robot.swerve.goToNearestBranch(true)), score1);
 
                 // Trigger to update routineStarted when routine ends
                 new Trigger(() -> trajectory5.cmd().isFinished())

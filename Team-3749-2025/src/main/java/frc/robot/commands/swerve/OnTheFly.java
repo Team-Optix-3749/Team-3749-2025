@@ -1,13 +1,19 @@
 package frc.robot.commands.swerve;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import org.json.simple.parser.ParseException;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
+import com.pathplanner.lib.util.FlippingUtil;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
@@ -53,6 +59,12 @@ public class OnTheFly extends Command {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
+
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            endpoint = FlippingUtil.flipFieldPose(endpoint);
+        }
 
         new Thread(() -> {
             debugTimer.reset();
@@ -147,6 +159,7 @@ public class OnTheFly extends Command {
     public void end(boolean interrupted) {
         currentlyThreading = false;
         timer.stop();
+        
         timer.reset();
         Robot.swerve.setIsOTF(false);
 
@@ -162,8 +175,7 @@ public class OnTheFly extends Command {
      */
     @Override
     public boolean isFinished() {
-        return !currentlyThreading && (trajectory == null || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) ||
-                (!Robot.swerve.getIsOTF());
+        return !currentlyThreading && (trajectory == null || (!Robot.swerve.getIsOTF()));
     }
 
     public double getTime() {
